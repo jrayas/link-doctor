@@ -63,7 +63,7 @@ The `Submission requirements for plugins` page 404s at its old URL. Current proc
 
 ## 5. Minimum app version
 
-Highest `@since` among APIs we plan to use: `getFileByPath`/`getFolderByPath` 1.5.7, `revealLeaf` 1.7.2, `vault.process` 1.1.0, `setHeading` 1.1.0. **Proposed `minAppVersion`: `1.5.7`**; revisit if we adopt anything newer (e.g. `SettingGroup` is 1.11.0, so avoid it).
+Highest `@since` among APIs we plan to use: `getFileByPath`/`getFolderByPath` 1.5.7, `revealLeaf` 1.7.2, `vault.process` 1.1.0, `setHeading` 1.1.0. **`minAppVersion` is `1.7.2`** (raised from the first proposal of 1.5.7 when Phase 4 started using `Workspace.revealLeaf`; `eslint-plugin-obsidianmd`'s `no-unsupported-api` rule enforces this); revisit if we adopt anything newer (e.g. `SettingGroup` is 1.11.0, so avoid it).
 
 ## 6. Linting
 
@@ -101,7 +101,7 @@ Highest `@since` among APIs we plan to use: `getFileByPath`/`getFolderByPath` 1.
 | D2 | Adopt `eslint-plugin-obsidianmd` ^0.4.2 `recommended` + custom Node/Electron import ban. | Current, official, enforces guidelines. |
 | D3 | Vitest for unit and mocked-integration tests; pure `core/` has zero `obsidian` imports. | `obsidian` has no runtime; purity makes testing cheap. |
 | D4 | `wdio-obsidian-service` as optional e2e, outside `verify`, pending user approval. | Reliable and current, but heavy. |
-| D5 | `minAppVersion` 1.5.7, `isDesktopOnly: false`. | Highest `@since` of planned APIs. |
+| D5 | `minAppVersion` 1.7.2 (was 1.5.7; `revealLeaf`), `isDesktopOnly: false`. | Highest `@since` of planned APIs. |
 | D6 | Types 1, 4, 5 via `unresolvedLinks`/own resolution; types 2, 3 via `headings`/`blocks`; resolve with `getFirstLinkpathDest` so case/path rules match Obsidian. **(verify list above)** | Prefer cache over file reads. |
 | D7 | Ignore rules: glob patterns (folder prefix + `*`/`**`), no user-supplied regex in MVP. | Safer (no ReDoS), simpler on mobile; regex also risks lookbehind on old iOS. |
 | D8 | Edits: Editor API for the active note, `vault.process` otherwise; own in-memory undo stack storing exact before/after text spans with a staleness check. | Guidelines + atomicity; undo must refuse if the text has since changed. |

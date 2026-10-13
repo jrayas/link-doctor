@@ -1,1 +1,148 @@
-/* Link Doctor styles. Use Obsidian CSS variables only; no hard-coded colours. */
+/* Link Doctor. Obsidian CSS variables only; no hard-coded colours. */
+
+.link-doctor-panel {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
+	padding: var(--size-4-2);
+	padding-bottom: calc(var(--size-4-2) + env(safe-area-inset-bottom));
+}
+
+.link-doctor-toolbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--size-4-2);
+}
+
+.link-doctor-toggle {
+	display: inline-flex;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	overflow: hidden;
+}
+
+.link-doctor-toggle-button {
+	min-width: 44px;
+	min-height: 44px;
+	padding: 0 var(--size-4-4);
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	background: transparent;
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.link-doctor-toggle-button.is-active {
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.link-doctor-icon-button {
+	min-width: 44px;
+	min-height: 44px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.link-doctor-status {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+	min-height: 1.2em;
+}
+
+.link-doctor-rows {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-1);
+}
+
+.link-doctor-item {
+	margin: 0;
+}
+
+.link-doctor-row {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-2-1);
+	min-height: 44px;
+	padding: var(--size-4-2);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	cursor: pointer;
+	overflow-wrap: anywhere;
+}
+
+.link-doctor-row:hover {
+	background: var(--background-modifier-hover);
+}
+
+.link-doctor-row:focus-visible {
+	outline: 2px solid var(--interactive-accent);
+	outline-offset: 1px;
+}
+
+.link-doctor-row-head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--size-4-2);
+	font-size: var(--font-ui-smaller);
+}
+
+.link-doctor-badge {
+	padding: 0 var(--size-4-2);
+	border-radius: var(--radius-s);
+	background: var(--background-modifier-hover);
+	color: var(--text-normal);
+	font-weight: var(--font-semibold);
+}
+
+.link-doctor-line,
+.link-doctor-source,
+.link-doctor-snippet {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
+
+.link-doctor-link-text {
+	font-family: var(--font-monospace);
+	font-size: var(--font-ui-small);
+}
+
+.link-doctor-snippet:empty {
+	display: none;
+}
+
+.link-doctor-more {
+	min-height: 44px;
+	width: 100%;
+}
+
+.link-doctor-empty {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-1);
+	padding: var(--size-4-8) var(--size-4-4);
+	text-align: center;
+	color: var(--text-muted);
+}
+
+.link-doctor-empty-title {
+	color: var(--text-normal);
+	font-weight: var(--font-semibold);
+}
+
+.link-doctor-diagnostics-text {
+	max-height: 60vh;
+	overflow: auto;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	user-select: text;
+	font-size: var(--font-ui-smaller);
+}

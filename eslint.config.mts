@@ -33,6 +33,6 @@ export default defineConfig(
 	{
 		// Dev-only code runs in Node, never inside Obsidian, so Node imports are fine here.
 		files: ['tests/**/*.ts', 'vitest.config.ts'],
-		rules: { 'obsidianmd/no-nodejs-modules': 'off' },
+		rules: { 'obsidianmd/no-nodejs-modules': 'off', 'obsidianmd/prefer-window-timers': 'off' },
 	},
 );

@@ -14,3 +14,12 @@ export class Plugin {
 export function normalizePath(path: string): string {
 	return path.replace(/[\\/]+/g, '/').replace(/^\/+|\/+$/g, '') || '/';
 }
+
+export class TFile {
+	path: string;
+	extension: string;
+	constructor(path = '') {
+		this.path = path;
+		this.extension = path.split('.').pop() ?? '';
+	}
+}
