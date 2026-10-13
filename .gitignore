@@ -5,3 +5,5 @@ main.js
 data.json
 .claude/
 .env
+test-vault/Edge/generated/
+test-vault/.obsidian/
