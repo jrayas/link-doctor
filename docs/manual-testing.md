@@ -54,3 +54,18 @@ Open the dashboard with the toolbar button in the side panel, or the command **O
 12. **Go to link** opens the note in a new tab with the link selected and does not replace the dashboard.
 13. Phone width (`this.app.emulateMobile(true)` and a narrow pane): the table becomes cards, buttons are at least 44 px tall, the preview modal scrolls and its buttons stay reachable.
 14. With *Confirm before applying* off (edit `data.json` to `"confirmBeforeFix": false` until the Phase 7 settings tab exists): fixes apply immediately with an Undo notice.
+
+## Phase 7: settings
+
+Open Settings, then Link Doctor.
+
+1. Add `Templates/` under **Ignored folders and patterns**: after about a second the dashboard total drops from 23 to 21 and `Templates/Template.md` disappears. A line such as `^Archive/.*$` shows a note that regular expressions are not supported.
+2. Switch off **Missing embed** under **Link types to check**: embeds vanish from the panel and dashboard. Switch it back on.
+3. Set **Default panel mode** to All, close and reopen the panel: it opens in All. Turn on **Remember last panel mode**, switch to Current, reload: it starts in Current.
+4. **Match strictness**: at the high end `[[Healthy nots]]` still gets a suggestion, `[[Cafe]]` may not. At the low end more suggestions appear.
+5. Turn off **Refresh automatically**: the refresh delay slider greys out and edits no longer update results until you press the rescan button. Turn it back on: a rescan runs.
+6. Change **Refresh delay** to 3000: results update about three seconds after an edit.
+7. Turn off **Confirm before applying a fix**: fixes apply at once with an Undo notice.
+8. **Reset to defaults** asks for confirmation, then restores everything, including the ignore rules.
+9. Edit `data.json` in the plugin folder to something broken, for example `{"fuzzyThreshold": "high", "ignoreRules": 5}`, and reload: the plugin loads with defaults for those fields and no errors in the console.
+10. On a phone-width window the settings page stays usable and the rules box is full width.

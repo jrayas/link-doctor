@@ -266,8 +266,13 @@
 }
 
 /* Dashboard. The container query turns the table into cards on narrow panes and phones. */
+/* Same width as a note: follows the "--file-line-width" theme variable and centres in the pane. */
 .link-doctor-dashboard {
 	container-type: inline-size;
+	width: 100%;
+	max-width: var(--file-line-width, 700px);
+	margin-inline: auto;
+	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 	gap: var(--size-4-3);
@@ -456,6 +461,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--size-4-1);
+	min-width: 9em;
 }
 
 .link-doctor-cell-actions button {
@@ -478,7 +484,7 @@
 	background: var(--background-secondary);
 }
 
-@container (max-width: 640px) {
+@container (max-width: 560px) {
 	.link-doctor-table thead {
 		position: absolute;
 		width: 1px;
@@ -526,4 +532,18 @@
 	.link-doctor-detail-row {
 		margin: calc(-1 * var(--size-4-2)) 0 var(--size-4-2);
 	}
+}
+
+/* Settings tab */
+.link-doctor-rules-input {
+	width: 100%;
+	min-height: 8em;
+	font-family: var(--font-monospace);
+}
+
+.link-doctor-rule-status {
+	margin-bottom: var(--size-4-2);
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+	overflow-wrap: anywhere;
 }

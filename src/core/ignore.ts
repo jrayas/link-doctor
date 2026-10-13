@@ -58,3 +58,8 @@ function globToRegExp(rule: string): RegExp | null {
 		return null;
 	}
 }
+
+/** Rules that look like regular expressions. They are matched literally, so warn the user. */
+export function findRegexLikeRules(rules: readonly string[]): string[] {
+	return rules.filter((r) => !r.trim().startsWith('#') && /[()[\]{}^$|+\\]/.test(r.replace(/\\$/, '')));
+}

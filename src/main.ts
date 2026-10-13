@@ -7,6 +7,7 @@ import { compileIgnoreRules } from './core/ignore';
 import { DiagnosticsModal } from './ui/diagnostics-modal';
 import { DASHBOARD_VIEW_TYPE, DashboardView } from './ui/dashboard-view';
 import { PANEL_VIEW_TYPE, PanelView } from './ui/panel-view';
+import { LinkDoctorSettingTab } from './ui/settings-tab';
 import { defaultSettings, enabledTypeSet, startingMode, validateSettings, type LinkDoctorSettings, type PanelMode } from './settings';
 
 export default class LinkDoctorPlugin extends Plugin {
@@ -31,15 +32,9 @@ export default class LinkDoctorPlugin extends Plugin {
 		);
 		this.applySettings();
 
-		this.refreshPanels = debounce(
-			() => {
-				this.panels().forEach((p) => p.refresh());
-				this.dashboards().forEach((d) => d.refresh());
-			},
-			this.settings.debounceMs,
-			true,
-		);
+		this.buildRefresh();
 		this.register(this.service.onEvent(() => this.refreshPanels()));
+		this.addSettingTab(new LinkDoctorSettingTab(this.app, this));
 		this.register(() => this.service.dispose());
 
 		this.register(this.fixes.onChange(() => this.dashboards().forEach((d) => d.updateUndo())));
@@ -108,10 +103,25 @@ export default class LinkDoctorPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	/** Recompiles anything derived from settings and re-checks the vault. */
-	applySettings(): void {
+	/** Recompiles anything derived from settings. `recheck` also re-runs detection (ignore rules, link types). */
+	applySettings(recheck = true): void {
 		this.ignored = compileIgnoreRules(this.settings.ignoreRules);
-		this.service?.refreshOptions();
+		this.buildRefresh();
+		if (recheck) this.service?.refreshOptions();
+		else this.refreshPanels();
+	}
+
+	private buildRefresh(): void {
+		// Nothing exists to cancel the first time through.
+		(this.refreshPanels as Debouncer<[], void> | undefined)?.cancel();
+		this.refreshPanels = debounce(
+			() => {
+				this.panels().forEach((p) => p.refresh());
+				this.dashboards().forEach((d) => d.refresh());
+			},
+			this.settings.debounceMs,
+			true,
+		);
 	}
 
 	async activatePanel(): Promise<void> {

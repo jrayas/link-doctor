@@ -45,3 +45,10 @@ describe('ignore rules', () => {
 		expect(compileIgnoreRules([])('anything.md')).toBe(false);
 	});
 });
+
+describe('findRegexLikeRules', () => {
+	it('flags rules that look like regular expressions but not plain globs', async () => {
+		const { findRegexLikeRules } = await import('../../src/core/ignore');
+		expect(findRegexLikeRules(['^Archive/.*$', '(a|b)', 'Templates/', '*.md', '**/draft-*', '# (comment)'])).toEqual(['^Archive/.*$', '(a|b)']);
+	});
+});
