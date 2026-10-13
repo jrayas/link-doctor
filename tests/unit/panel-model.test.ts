@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { IndexStatus } from '../../src/adapters/index-service';
 import type { BrokenLink } from '../../src/core/types';
-import { computePanelState } from '../../src/ui/panel-model';
+import { computePanelState, contextFor } from '../../src/ui/panel-model';
 
 const ready: IndexStatus = { state: 'ready', done: 1, total: 1 };
 
@@ -45,5 +45,17 @@ describe('computePanelState', () => {
 			expect(state.hidden).toBe(2);
 			expect(state.rows[0]).toMatchObject({ sourceName: 'A', typeLabel: 'Missing note', text: '[[X]]' });
 		}
+	});
+});
+
+describe('contextFor', () => {
+	it('drops a snippet that only repeats the link', () => {
+		expect(contextFor('![[missing.png]]', '![[missing.png]]')).toBe('');
+		expect(contextFor('- [[Gone]]', '[[Gone]]')).toBe('');
+		expect(contextFor('  ![alt text](images/gone.png) ', '![alt text](images/gone.png)')).toBe('');
+	});
+
+	it('keeps real surrounding context', () => {
+		expect(contextFor('- [[Healthy nots]] is a typo.', '[[Healthy nots]]')).toBe('- [[Healthy nots]] is a typo.');
 	});
 });

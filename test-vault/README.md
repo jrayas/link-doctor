@@ -1,4 +1,4 @@
-# Fixture vault
+# FFixture vault
 
 Shared source of truth for automated and manual checks. Every note here is deliberate.
 `tests/unit/fixture-vault.test.ts` asserts the counts below; update both together.

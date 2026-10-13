@@ -2,7 +2,7 @@ import { ItemView, setIcon, TFile, type WorkspaceLeaf } from 'obsidian';
 import { jumpToLink } from '../adapters/navigate';
 import { snippetAround } from '../core/text';
 import type { PanelMode } from '../settings';
-import { computePanelState, type PanelRow, type PanelState } from './panel-model';
+import { computePanelState, contextFor, type PanelRow, type PanelState } from './panel-model';
 import type LinkDoctorPlugin from '../main';
 
 export const PANEL_VIEW_TYPE = 'link-doctor-panel';
@@ -196,7 +196,7 @@ export class PanelView extends ItemView {
 			for (const row of group) {
 				const target = this.listEl.querySelector<HTMLElement>(`[data-snippet-for="${CSS.escape(row.link.id)}"]`);
 				const { start, end } = row.link;
-				target?.setText(snippetAround(text, start.offset, end.offset - start.offset));
+				target?.setText(contextFor(snippetAround(text, start.offset, end.offset - start.offset), row.text));
 			}
 		}
 	}

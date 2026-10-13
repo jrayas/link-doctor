@@ -61,3 +61,12 @@ export function computePanelState(input: PanelInput): PanelState {
 	const rows = source.slice(0, input.limit).map(toRow);
 	return { kind: 'list', rows, hidden: Math.max(0, source.length - rows.length) };
 }
+
+/**
+ * The context line adds nothing when the link is the only thing on its line (the row already
+ * shows the link as written), so it is dropped. Surrounding text is kept.
+ */
+export function contextFor(snippet: string, linkText: string): string {
+	const strip = (value: string) => value.replace(/^[\s>*+-]+/, '').replace(/\s+/g, ' ').trim();
+	return strip(snippet) === strip(linkText) ? '' : snippet;
+}
