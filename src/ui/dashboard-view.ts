@@ -274,10 +274,11 @@ export class DashboardView extends ItemView {
 		const cell = (label: string, cls?: string) => tr.createEl('td', { attr: { 'data-label': label }, ...(cls ? { cls } : {}) });
 		if (showNote) cell('Note', 'link-doctor-cell-note').setText(link.sourcePath);
 		cell('Link', 'link-doctor-cell-link').createEl('code', { text: link.original });
-		cell('Type').createSpan({ cls: 'link-doctor-badge', text: BROKEN_TYPE_LABELS[link.type] });
-		cell('Line').setText(String(link.start.line + 1));
-		const suggestionCell = cell('Suggested fix', 'link-doctor-cell-suggestion');
-		const actions = cell('Actions', 'link-doctor-cell-actions');
+		cell('Type', 'link-doctor-cell-type').createSpan({ cls: 'link-doctor-badge', text: BROKEN_TYPE_LABELS[link.type] });
+		cell('Line', 'link-doctor-cell-line').setText(String(link.start.line + 1));
+		// The flex layout lives on inner wrappers: a td must stay a real table cell.
+		const suggestionCell = cell('Suggested fix').createDiv({ cls: 'link-doctor-suggestion' });
+		const actions = cell('Actions').createDiv({ cls: 'link-doctor-actions' });
 
 		const apply = actions.createEl('button', { text: 'Apply suggestion', cls: 'mod-cta', attr: { disabled: 'true' } });
 		const more = actions.createEl('button', { text: 'More fixes', attr: { 'aria-expanded': 'false' } });

@@ -147,40 +147,6 @@
 	font-size: var(--font-ui-smaller);
 }
 
-/* Fix buttons (dashboard) */
-.link-doctor-fix-button {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: space-between;
-	gap: var(--size-4-2);
-	width: 100%;
-	min-height: 44px;
-	height: auto;
-	text-align: left;
-	white-space: normal;
-	overflow-wrap: anywhere;
-}
-
-.link-doctor-fix-none {
-	color: var(--text-muted);
-	font-size: var(--font-ui-smaller);
-}
-
-.link-doctor-confidence {
-	font-size: var(--font-ui-smaller);
-	color: var(--text-muted);
-}
-
-.link-doctor-confidence.is-high {
-	color: var(--text-success);
-}
-
-.link-doctor-confidence.is-low {
-	color: var(--text-faint);
-}
-
-
 /* Preview modal: scrolls on small screens, buttons stay reachable. */
 .link-doctor-modal {
 	max-height: 90vh;
@@ -250,14 +216,14 @@
 }
 
 .link-doctor-preview-buttons button {
-	min-height: 44px;
-	min-width: 44px;
+	min-height: var(--ld-target, 44px);
+	min-width: var(--ld-target, 44px);
 	flex: 1 1 8em;
 }
 
 .link-doctor-notice-undo {
-	min-height: 44px;
-	min-width: 44px;
+	min-height: var(--ld-target, 44px);
+	min-width: var(--ld-target, 44px);
 }
 
 .link-doctor-toolbar-tools {
@@ -265,8 +231,27 @@
 	align-items: center;
 }
 
-/* Dashboard. The container query turns the table into cards on narrow panes and phones. */
-/* Same width as a note: follows the "--file-line-width" theme variable and centres in the pane. */
+/*
+ * Dashboard. Same width as a note: it follows the "--file-line-width" theme variable and centres in
+ * the pane. Sizes are compact for a mouse and grow to 44 px touch targets on touch devices.
+ */
+.link-doctor-dashboard,
+.link-doctor-modal {
+	--ld-target: 32px;
+}
+
+@media (pointer: coarse) {
+	.link-doctor-dashboard,
+	.link-doctor-modal {
+		--ld-target: 44px;
+	}
+}
+
+body.is-mobile .link-doctor-dashboard,
+body.is-mobile .link-doctor-modal {
+	--ld-target: 44px;
+}
+
 .link-doctor-dashboard {
 	container-type: inline-size;
 	width: 100%;
@@ -278,6 +263,20 @@
 	gap: var(--size-4-3);
 	padding: var(--size-4-4);
 	padding-bottom: calc(var(--size-4-4) + env(safe-area-inset-bottom));
+	font-size: var(--font-ui-smaller);
+}
+
+.link-doctor-dashboard button,
+.link-doctor-dashboard select,
+.link-doctor-dashboard input {
+	font-size: var(--font-ui-smaller);
+}
+
+.link-doctor-dashboard button:not(.clickable-icon) {
+	min-height: var(--ld-target);
+	height: auto;
+	padding: var(--size-2-2) var(--size-4-3);
+	white-space: normal;
 }
 
 .link-doctor-dashboard-header {
@@ -289,6 +288,7 @@
 
 .link-doctor-dashboard-title {
 	margin: 0;
+	font-size: var(--font-ui-large);
 }
 
 .link-doctor-dashboard-actions {
@@ -296,21 +296,26 @@
 	align-items: center;
 }
 
+.link-doctor-dashboard .link-doctor-icon-button {
+	min-width: var(--ld-target);
+	min-height: var(--ld-target);
+}
+
 .link-doctor-tiles {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(7em, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(6em, 1fr));
 	gap: var(--size-4-2);
 }
 
 .link-doctor-tile {
-	padding: var(--size-4-3);
+	padding: var(--size-4-2) var(--size-4-3);
 	border: 1px solid var(--background-modifier-border);
 	border-radius: var(--radius-m);
 	background: var(--background-secondary);
 }
 
 .link-doctor-tile-value {
-	font-size: var(--font-ui-large);
+	font-size: var(--font-ui-medium);
 	font-weight: var(--font-semibold);
 }
 
@@ -320,7 +325,7 @@
 }
 
 .link-doctor-health-bar {
-	height: var(--size-4-2);
+	height: var(--size-4-1);
 	margin-top: var(--size-4-2);
 	border-radius: var(--radius-s);
 	background: var(--background-modifier-border);
@@ -337,7 +342,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: var(--size-2-1);
-	margin-top: var(--size-4-3);
+	margin-top: var(--size-4-2);
 }
 
 .link-doctor-worst-title {
@@ -349,8 +354,6 @@
 	display: flex;
 	justify-content: space-between;
 	gap: var(--size-4-2);
-	min-height: 44px;
-	height: auto;
 	text-align: left;
 	overflow-wrap: anywhere;
 }
@@ -369,20 +372,13 @@
 
 .link-doctor-search {
 	width: 100%;
-	min-height: 44px;
+	min-height: var(--ld-target);
 }
 
 .link-doctor-chips {
 	display: flex;
 	flex-wrap: wrap;
 	gap: var(--size-4-1);
-}
-
-.link-doctor-chip,
-.link-doctor-group-toggle {
-	min-height: 44px;
-	height: auto;
-	white-space: normal;
 }
 
 .link-doctor-chip.is-active {
@@ -411,7 +407,7 @@
 }
 
 .link-doctor-select select {
-	min-height: 44px;
+	min-height: var(--ld-target);
 	max-width: 100%;
 }
 
@@ -425,7 +421,8 @@
 	display: flex;
 	justify-content: space-between;
 	gap: var(--size-4-2);
-	padding: var(--size-4-2) 0;
+	padding: var(--size-4-1) 0;
+	font-size: var(--font-ui-small);
 	font-weight: var(--font-semibold);
 	overflow-wrap: anywhere;
 }
@@ -437,9 +434,11 @@
 	white-space: nowrap;
 }
 
+/* Table: real cells (never display:flex on a td), headings never break mid-word. */
 .link-doctor-table {
 	width: 100%;
 	border-collapse: collapse;
+	table-layout: auto;
 }
 
 .link-doctor-table th {
@@ -447,30 +446,43 @@
 	color: var(--text-muted);
 	font-size: var(--font-ui-smaller);
 	font-weight: var(--font-normal);
+	white-space: nowrap;
 }
 
 .link-doctor-table th,
 .link-doctor-table td {
-	padding: var(--size-4-2);
+	padding: var(--size-4-1) var(--size-4-2);
 	border-bottom: 1px solid var(--background-modifier-border);
 	vertical-align: top;
+}
+
+.link-doctor-table td {
 	overflow-wrap: anywhere;
 }
 
-.link-doctor-cell-actions {
-	display: flex;
-	flex-wrap: wrap;
-	gap: var(--size-4-1);
-	min-width: 9em;
+.link-doctor-table code {
+	font-size: var(--font-ui-smaller);
+	background: transparent;
+	padding: 0;
 }
 
-.link-doctor-cell-actions button {
-	min-height: 44px;
-	height: auto;
-	white-space: normal;
+.link-doctor-table .link-doctor-badge {
+	display: inline-block;
+	white-space: nowrap;
+	font-size: var(--font-ui-smaller);
 }
 
-.link-doctor-cell-suggestion {
+.link-doctor-cell-line {
+	white-space: nowrap;
+	width: 3em;
+}
+
+.link-doctor-cell-type {
+	width: 1%;
+	white-space: nowrap;
+}
+
+.link-doctor-suggestion {
 	display: flex;
 	flex-direction: column;
 	gap: var(--size-2-1);
@@ -480,11 +492,55 @@
 	color: var(--text-muted);
 }
 
+.link-doctor-actions {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: var(--size-4-1);
+	min-width: 8.5em;
+}
+
 .link-doctor-detail-row td {
 	background: var(--background-secondary);
 }
 
-@container (max-width: 560px) {
+.link-doctor-fix-options {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-1);
+}
+
+.link-doctor-fix-button {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--size-4-2);
+	width: 100%;
+	text-align: left;
+	overflow-wrap: anywhere;
+}
+
+.link-doctor-fix-none {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
+
+.link-doctor-confidence {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
+}
+
+.link-doctor-confidence.is-high {
+	color: var(--text-success);
+}
+
+.link-doctor-confidence.is-low {
+	color: var(--text-faint);
+}
+
+/* Below this pane width each row becomes a card. */
+@container (max-width: 520px) {
 	.link-doctor-table thead {
 		position: absolute;
 		width: 1px;
@@ -512,6 +568,7 @@
 		gap: var(--size-4-2);
 		justify-content: space-between;
 		border-bottom: 0;
+		width: 100%;
 	}
 
 	.link-doctor-table td[data-label]::before {
@@ -521,12 +578,13 @@
 		font-size: var(--font-ui-smaller);
 	}
 
-	.link-doctor-cell-actions {
-		flex-direction: column;
+	.link-doctor-cell-line,
+	.link-doctor-cell-type {
+		width: 100%;
 	}
 
-	.link-doctor-cell-actions button {
-		width: 100%;
+	.link-doctor-actions {
+		flex: 1 1 auto;
 	}
 
 	.link-doctor-detail-row {
