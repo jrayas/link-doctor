@@ -1,0 +1,3 @@
+* text=auto eol=lf
+# Fixture notes that deliberately use CRLF line endings must never be normalised.
+test-vault/**/*crlf*.md -text

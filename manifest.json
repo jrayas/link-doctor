@@ -1,0 +1,9 @@
+{
+	"id": "link-doctor",
+	"name": "Link Doctor",
+	"version": "0.1.0",
+	"minAppVersion": "1.5.7",
+	"description": "Find, explain and fix broken links, with previews and undo.",
+	"author": "Dominic",
+	"isDesktopOnly": false
+}
