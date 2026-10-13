@@ -5,6 +5,7 @@ import { createVaultPort, wireVaultEvents } from './adapters/obsidian-port';
 import { IndexService } from './adapters/index-service';
 import { compileIgnoreRules } from './core/ignore';
 import { DiagnosticsModal } from './ui/diagnostics-modal';
+import { DASHBOARD_VIEW_TYPE, DashboardView } from './ui/dashboard-view';
 import { PANEL_VIEW_TYPE, PanelView } from './ui/panel-view';
 import { defaultSettings, enabledTypeSet, startingMode, validateSettings, type LinkDoctorSettings, type PanelMode } from './settings';
 
@@ -28,14 +29,23 @@ export default class LinkDoctorPlugin extends Plugin {
 			() => this.service.index,
 			() => this.settings,
 		);
-		this.register(this.fixes.onChange(() => this.panels().forEach((p) => p.updateUndo())));
 		this.applySettings();
 
-		this.refreshPanels = debounce(() => this.panels().forEach((p) => p.refresh()), this.settings.debounceMs, true);
+		this.refreshPanels = debounce(
+			() => {
+				this.panels().forEach((p) => p.refresh());
+				this.dashboards().forEach((d) => d.refresh());
+			},
+			this.settings.debounceMs,
+			true,
+		);
 		this.register(this.service.onEvent(() => this.refreshPanels()));
 		this.register(() => this.service.dispose());
 
+		this.register(this.fixes.onChange(() => this.dashboards().forEach((d) => d.updateUndo())));
+
 		this.registerView(PANEL_VIEW_TYPE, (leaf) => new PanelView(leaf, this));
+		this.registerView(DASHBOARD_VIEW_TYPE, (leaf) => new DashboardView(leaf, this));
 		this.addRibbonIcon('stethoscope', 'Open link doctor', () => void this.activatePanel());
 		this.addCommand({ id: 'open-panel', name: 'Open panel', callback: () => void this.activatePanel() });
 		this.addCommand({
@@ -113,6 +123,23 @@ export default class LinkDoctorPlugin extends Plugin {
 			await leaf.setViewState({ type: PANEL_VIEW_TYPE, active: true });
 		}
 		await workspace.revealLeaf(leaf);
+	}
+
+	async activateDashboard(): Promise<void> {
+		const { workspace } = this.app;
+		let leaf: WorkspaceLeaf | null = workspace.getLeavesOfType(DASHBOARD_VIEW_TYPE)[0] ?? null;
+		if (!leaf) {
+			leaf = workspace.getLeaf('tab');
+			await leaf.setViewState({ type: DASHBOARD_VIEW_TYPE, active: true });
+		}
+		await workspace.revealLeaf(leaf);
+	}
+
+	private dashboards(): DashboardView[] {
+		return this.app.workspace
+			.getLeavesOfType(DASHBOARD_VIEW_TYPE)
+			.map((l) => l.view)
+			.filter((v): v is DashboardView => v instanceof DashboardView);
 	}
 
 	private panels(): PanelView[] {

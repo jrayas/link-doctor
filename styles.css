@@ -147,50 +147,7 @@
 	font-size: var(--font-ui-smaller);
 }
 
-/* Rows: the card holds a full-width jump button and the fix controls as siblings. */
-.link-doctor-row {
-	padding: 0;
-	cursor: default;
-}
-
-.link-doctor-jump {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: var(--size-2-1);
-	width: 100%;
-	min-height: 44px;
-	height: auto;
-	padding: var(--size-4-2);
-	border: 0;
-	border-radius: var(--radius-m) var(--radius-m) 0 0;
-	box-shadow: none;
-	background: transparent;
-	color: var(--text-normal);
-	text-align: left;
-	white-space: normal;
-	overflow-wrap: anywhere;
-	cursor: pointer;
-}
-
-.link-doctor-jump:hover {
-	background: var(--background-modifier-hover);
-}
-
-.link-doctor-fix-toggle {
-	align-self: flex-end;
-	min-width: 44px;
-	min-height: 44px;
-	margin: 0 var(--size-4-2) var(--size-4-1);
-}
-
-.link-doctor-fix-options {
-	display: flex;
-	flex-direction: column;
-	gap: var(--size-4-1);
-	padding: 0 var(--size-4-2) var(--size-4-2);
-}
-
+/* Fix buttons (dashboard) */
 .link-doctor-fix-button {
 	display: flex;
 	flex-wrap: wrap;
@@ -223,9 +180,6 @@
 	color: var(--text-faint);
 }
 
-.link-doctor-icon-button:disabled {
-	opacity: 0.4;
-}
 
 /* Preview modal: scrolls on small screens, buttons stay reachable. */
 .link-doctor-modal {
@@ -304,4 +258,272 @@
 .link-doctor-notice-undo {
 	min-height: 44px;
 	min-width: 44px;
+}
+
+.link-doctor-toolbar-tools {
+	display: flex;
+	align-items: center;
+}
+
+/* Dashboard. The container query turns the table into cards on narrow panes and phones. */
+.link-doctor-dashboard {
+	container-type: inline-size;
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-3);
+	padding: var(--size-4-4);
+	padding-bottom: calc(var(--size-4-4) + env(safe-area-inset-bottom));
+}
+
+.link-doctor-dashboard-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--size-4-2);
+}
+
+.link-doctor-dashboard-title {
+	margin: 0;
+}
+
+.link-doctor-dashboard-actions {
+	display: flex;
+	align-items: center;
+}
+
+.link-doctor-tiles {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(7em, 1fr));
+	gap: var(--size-4-2);
+}
+
+.link-doctor-tile {
+	padding: var(--size-4-3);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background: var(--background-secondary);
+}
+
+.link-doctor-tile-value {
+	font-size: var(--font-ui-large);
+	font-weight: var(--font-semibold);
+}
+
+.link-doctor-tile-label {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
+
+.link-doctor-health-bar {
+	height: var(--size-4-2);
+	margin-top: var(--size-4-2);
+	border-radius: var(--radius-s);
+	background: var(--background-modifier-border);
+	overflow: hidden;
+}
+
+.link-doctor-health-fill {
+	width: var(--ld-health, 0%);
+	height: 100%;
+	background: var(--text-success);
+}
+
+.link-doctor-worst {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-2-1);
+	margin-top: var(--size-4-3);
+}
+
+.link-doctor-worst-title {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
+
+.link-doctor-worst-item {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--size-4-2);
+	min-height: 44px;
+	height: auto;
+	text-align: left;
+	overflow-wrap: anywhere;
+}
+
+.link-doctor-worst-path {
+	min-width: 0;
+	overflow-wrap: anywhere;
+	white-space: normal;
+}
+
+.link-doctor-controls {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
+}
+
+.link-doctor-search {
+	width: 100%;
+	min-height: 44px;
+}
+
+.link-doctor-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-4-1);
+}
+
+.link-doctor-chip,
+.link-doctor-group-toggle {
+	min-height: 44px;
+	height: auto;
+	white-space: normal;
+}
+
+.link-doctor-chip.is-active {
+	background: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.link-doctor-select-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: var(--size-4-2);
+}
+
+.link-doctor-select {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-2-1);
+	flex: 1 1 10em;
+	min-width: 0;
+}
+
+.link-doctor-select-label {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
+
+.link-doctor-select select {
+	min-height: 44px;
+	max-width: 100%;
+}
+
+.link-doctor-results {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-4);
+}
+
+.link-doctor-group-head {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--size-4-2);
+	padding: var(--size-4-2) 0;
+	font-weight: var(--font-semibold);
+	overflow-wrap: anywhere;
+}
+
+.link-doctor-group-count {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+	font-weight: var(--font-normal);
+	white-space: nowrap;
+}
+
+.link-doctor-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.link-doctor-table th {
+	text-align: left;
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+	font-weight: var(--font-normal);
+}
+
+.link-doctor-table th,
+.link-doctor-table td {
+	padding: var(--size-4-2);
+	border-bottom: 1px solid var(--background-modifier-border);
+	vertical-align: top;
+	overflow-wrap: anywhere;
+}
+
+.link-doctor-cell-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-4-1);
+}
+
+.link-doctor-cell-actions button {
+	min-height: 44px;
+	height: auto;
+	white-space: normal;
+}
+
+.link-doctor-cell-suggestion {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-2-1);
+}
+
+.link-doctor-no-suggestion {
+	color: var(--text-muted);
+}
+
+.link-doctor-detail-row td {
+	background: var(--background-secondary);
+}
+
+@container (max-width: 640px) {
+	.link-doctor-table thead {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+	}
+
+	.link-doctor-table,
+	.link-doctor-table tbody,
+	.link-doctor-table tr,
+	.link-doctor-table td {
+		display: block;
+		width: 100%;
+	}
+
+	.link-doctor-table-row {
+		margin-bottom: var(--size-4-2);
+		border: 1px solid var(--background-modifier-border);
+		border-radius: var(--radius-m);
+	}
+
+	.link-doctor-table td {
+		display: flex;
+		gap: var(--size-4-2);
+		justify-content: space-between;
+		border-bottom: 0;
+	}
+
+	.link-doctor-table td[data-label]::before {
+		content: attr(data-label);
+		flex: 0 0 6em;
+		color: var(--text-muted);
+		font-size: var(--font-ui-smaller);
+	}
+
+	.link-doctor-cell-actions {
+		flex-direction: column;
+	}
+
+	.link-doctor-cell-actions button {
+		width: 100%;
+	}
+
+	.link-doctor-detail-row {
+		margin: calc(-1 * var(--size-4-2)) 0 var(--size-4-2);
+	}
 }

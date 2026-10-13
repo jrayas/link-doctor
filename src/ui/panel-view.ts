@@ -1,7 +1,6 @@
 import { ItemView, setIcon, TFile, type WorkspaceLeaf } from 'obsidian';
 import { jumpToLink } from '../adapters/navigate';
 import { snippetAround } from '../core/text';
-import { renderFixOptions } from './fix-options';
 import type { PanelMode } from '../settings';
 import { computePanelState, contextFor, type PanelRow, type PanelState } from './panel-model';
 import type LinkDoctorPlugin from '../main';
@@ -16,7 +15,6 @@ export class PanelView extends ItemView {
 	private statusEl: HTMLElement | null = null;
 	private modeButtons = new Map<PanelMode, HTMLButtonElement>();
 	private limit = ROW_LIMIT;
-	private undoButton: HTMLButtonElement | null = null;
 
 	constructor(leaf: WorkspaceLeaf, private readonly plugin: LinkDoctorPlugin) {
 		super(leaf);
@@ -65,27 +63,19 @@ export class PanelView extends ItemView {
 			button.addEventListener('click', () => this.setMode(mode));
 			this.modeButtons.set(mode, button);
 		}
-		const refresh = bar.createEl('button', {
+		const tools = bar.createDiv({ cls: 'link-doctor-toolbar-tools' });
+		const refresh = tools.createEl('button', {
 			cls: 'link-doctor-icon-button clickable-icon',
 			attr: { 'aria-label': 'Rescan vault', title: 'Rescan vault' },
 		});
 		setIcon(refresh, 'refresh-cw');
 		refresh.addEventListener('click', () => void this.plugin.rescan());
-		this.undoButton = bar.createEl('button', {
+		const dashboard = tools.createEl('button', {
 			cls: 'link-doctor-icon-button clickable-icon',
-			attr: { 'aria-label': 'Undo last fix', title: 'Undo last fix' },
+			attr: { 'aria-label': 'Open dashboard', title: 'Open dashboard' },
 		});
-		setIcon(this.undoButton, 'undo-2');
-		this.undoButton.addEventListener('click', () => void this.plugin.fixes.undo());
-		this.updateUndo();
-	}
-
-	/** Enables the undo button only when there is something to undo. */
-	updateUndo(): void {
-		if (!this.undoButton) return;
-		const label = this.plugin.fixes.undoLabel();
-		this.undoButton.disabled = label === null;
-		this.undoButton.setAttribute('aria-label', label ? `Undo: ${label}` : 'Undo last fix');
+		setIcon(dashboard, 'layout-dashboard');
+		dashboard.addEventListener('click', () => void this.plugin.activateDashboard());
 	}
 
 	private setMode(mode: PanelMode): void {
@@ -166,39 +156,32 @@ export class PanelView extends ItemView {
 
 	private renderRow(ul: HTMLElement, row: PanelRow): void {
 		const li = ul.createEl('li', { cls: 'link-doctor-item' });
-		const card = li.createDiv({ cls: 'link-doctor-row' });
-		const jump = card.createEl('button', {
-			cls: 'link-doctor-jump',
+		const el = li.createDiv({
+			cls: 'link-doctor-row',
 			attr: {
+				role: 'button',
+				tabindex: '0',
 				'aria-label': `${row.typeLabel}: ${row.text}, ${row.sourceName}, line ${row.line}. Go to link`,
 				'data-row-id': row.link.id,
 			},
 		});
-		const head = jump.createDiv({ cls: 'link-doctor-row-head' });
+		const head = el.createDiv({ cls: 'link-doctor-row-head' });
 		head.createSpan({ cls: 'link-doctor-badge', text: row.typeLabel });
 		head.createSpan({ cls: 'link-doctor-line', text: `Line ${row.line}` });
-		jump.createDiv({ cls: 'link-doctor-link-text', text: row.text });
-		if (this.mode === 'all') jump.createDiv({ cls: 'link-doctor-source', text: row.sourcePath });
-		jump.createDiv({ cls: 'link-doctor-snippet', attr: { 'data-snippet-for': row.link.id } });
-		jump.addEventListener('click', () => void jumpToLink(this.app, row.link));
-		jump.addEventListener('keydown', (event) => {
-			if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
-			event.preventDefault();
-			const all = Array.from(ul.querySelectorAll<HTMLElement>('.link-doctor-jump'));
-			all[all.indexOf(jump) + (event.key === 'ArrowDown' ? 1 : -1)]?.focus();
-		});
-
-		const toggle = card.createEl('button', { text: 'Fix', cls: 'link-doctor-fix-toggle', attr: { 'aria-expanded': 'false' } });
-		const options = card.createDiv({ cls: 'link-doctor-fix-options' });
-		options.hide();
-		toggle.addEventListener('click', () => {
-			const open = toggle.getAttribute('aria-expanded') !== 'true';
-			toggle.setAttribute('aria-expanded', String(open));
-			if (open) {
-				renderFixOptions(options, row.link, this.plugin.fixes);
-				options.show();
-			} else {
-				options.hide();
+		el.createDiv({ cls: 'link-doctor-link-text', text: row.text });
+		if (this.mode === 'all') el.createDiv({ cls: 'link-doctor-source', text: row.sourcePath });
+		el.createDiv({ cls: 'link-doctor-snippet', attr: { 'data-snippet-for': row.link.id } });
+		const go = () => void jumpToLink(this.app, row.link);
+		el.addEventListener('click', go);
+		el.addEventListener('keydown', (event) => {
+			if (event.key === 'Enter' || event.key === ' ') {
+				event.preventDefault();
+				go();
+			} else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+				event.preventDefault();
+				const rows = Array.from(ul.querySelectorAll<HTMLElement>('.link-doctor-row'));
+				const next = rows[rows.indexOf(el) + (event.key === 'ArrowDown' ? 1 : -1)];
+				next?.focus();
 			}
 		});
 	}

@@ -9,7 +9,7 @@ function findOpenLeaf(app: App, file: TFile): WorkspaceLeaf | null {
 }
 
 /** Opens the note and puts the cursor on the link. Falls back to just opening the note. */
-export async function jumpToLink(app: App, link: BrokenLink): Promise<void> {
+export async function jumpToLink(app: App, link: BrokenLink, inNewTab = false): Promise<void> {
 	const file = app.vault.getFileByPath(link.sourcePath);
 	if (!file) {
 		new Notice('That note no longer exists.');
@@ -17,7 +17,8 @@ export async function jumpToLink(app: App, link: BrokenLink): Promise<void> {
 	}
 	const from = { line: link.start.line, ch: link.start.col };
 	const to = { line: link.end.line, ch: link.end.col };
-	const leaf = findOpenLeaf(app, file) ?? app.workspace.getLeaf(false);
+	// From the dashboard, open a new tab so the dashboard itself is not replaced.
+	const leaf = findOpenLeaf(app, file) ?? app.workspace.getLeaf(inNewTab ? 'tab' : false);
 	await leaf.openFile(file, { active: true, eState: { line: from.line, cursor: { from, to } } });
 	await app.workspace.revealLeaf(leaf);
 	const view = leaf.view;

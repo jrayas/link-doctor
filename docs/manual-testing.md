@@ -34,18 +34,23 @@ Open each note listed below and run **Link doctor: Show diagnostics for the curr
 - `Broken/Missing notes.md`: are links inside code spans or fences absent from the cache?
 - `Edge/crlf-note.md`: are the reported lines 5 and 6?
 
-## Phase 5: fixes, preview and undo
+## Phases 5 and 6: dashboard, fixes, preview and undo
 
-Run these on a **copy** of the fixture vault if you want to keep it pristine (or use *Undo* and `git checkout test-vault`).
+Fixes live in the dashboard; the side panel only lists and jumps. Run these on a copy of the fixture vault, or restore it afterwards with `git checkout test-vault`.
 
-1. Open `Broken/Missing notes.md`, expand **Fix** on `[[Healthy nots]]`. The top suggestion is "Use Healthy note" with a "High match" label. "Create missing note" and "Remove link, keep text" are also offered.
-2. Tap the suggestion. A preview shows the **Before** and **After** lines. Cancel: nothing changes. Repeat and **Apply fix**: the link is rewritten, a notice appears with an **Undo** button, and the row disappears.
-3. Tap **Undo** in the notice (or the undo icon in the panel toolbar, or the command **Undo last fix**): the original text returns exactly.
-4. `Broken/Missing headings.md`: fix `[[Healthy note#Section won]]`. Only the heading part changes; an alias, if present, is kept.
-5. `Broken/Missing markdown links.md`: fix `[bad heading](Healthy%20note.md#Nope)`. It must stay a Markdown link.
-6. `Edge/crlf-note.md`: remove or fix a link, then check the line endings are still CRLF (for example with `file` or an editor's status bar) and that undo restores the file exactly.
-7. Create missing note on `[[Does not exist]]`: the preview shows the path (your "default location for new notes" setting decides the folder). After creating, undo moves the empty note to the trash. Type something in it first, then undo: it must refuse and keep the note.
-8. A name with unsafe characters such as `[[What? A:note]]` shows a warning in the preview and a sanitised file name.
-9. Edit the note while a preview is open and apply: you should get "The note has changed since the scan" and no edit.
-10. On a phone-width window (`this.app.emulateMobile(true)`): the preview modal scrolls, **Cancel** and **Apply fix** are reachable, and every button is at least 44 px tall.
-11. Turn off *Confirm before applying* (settings tab arrives in Phase 7; until then edit `data.json` with `"confirmBeforeFix": false`): the fix applies immediately with an Undo notice.
+Open the dashboard with the toolbar button in the side panel, or the command **Open dashboard**.
+
+1. The summary shows notes, links, broken count and healthy percentage, a bar, the notes with the most broken links, and one chip per link type with its count.
+2. **Search**: type `healthy` and the list filters as you type. Click a chip to filter by type (click again to clear). Pick a folder. Change **Sort by**. Toggle **Grouped by note**. Tap a note under "Notes with the most broken links" to filter to it. "Nothing matches" offers **Clear filters**.
+3. Each row shows the link, its type, the line, a suggested fix with a High, Medium or Low match label, and the buttons **Apply suggestion**, **More fixes** and **Go to link**. Suggestions appear a moment after the list.
+4. `[[Healthy nots]]`: **Apply suggestion** opens a preview with Before and After lines. **Cancel** changes nothing. **Apply fix** rewrites the link, and a notice with an **Undo** button appears.
+5. Undo from the notice, from the undo icon in the dashboard header, or with the command **Undo last fix**: the original text returns exactly.
+6. **More fixes** shows up to three suggestions, **Create missing note** (missing notes only) and **Remove link, keep text**.
+7. `[[Healthy note#Section won]]`: only the heading part changes, an alias is kept. `[bad heading](Healthy%20note.md#Nope)` stays a Markdown link.
+8. `Edge/crlf-note.md`: fix or remove a link, then confirm the file still has CRLF endings and undo restores it exactly.
+9. Create missing note on `[[Does not exist]]`: the preview shows the path (Obsidian's "default location for new notes" decides the folder). Undo moves the empty note to the trash. Type in it first and undo again: it must refuse.
+10. `[[What? A:note]]`: the preview warns about the sanitised file name.
+11. Edit the note while a preview is open, then apply: "The note has changed since the scan" and no edit.
+12. **Go to link** opens the note in a new tab with the link selected and does not replace the dashboard.
+13. Phone width (`this.app.emulateMobile(true)` and a narrow pane): the table becomes cards, buttons are at least 44 px tall, the preview modal scrolls and its buttons stay reachable.
+14. With *Confirm before applying* off (edit `data.json` to `"confirmBeforeFix": false` until the Phase 7 settings tab exists): fixes apply immediately with an Undo notice.
