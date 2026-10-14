@@ -14,7 +14,7 @@ Find the broken links in your vault and jump straight to them.
 
 It also lists **empty notes**, meaning notes with nothing but frontmatter. Web links aren't checked.
 
-It matches names the way Obsidian does (ignoring case and accent differences, handling relative paths and aliases) and works on desktop and mobile. It never edits your notes, and it makes no network requests.
+It matches names the way Obsidian does (ignoring case and accent differences, handling relative paths and aliases) and works on desktop and mobile. It never edits your notes, and it makes no network requests. It lists every file path in your vault (never file contents) so it can tell whether a link target exists.
 
 ## How to use it
 

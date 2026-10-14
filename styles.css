@@ -544,11 +544,15 @@ body.is-mobile .link-doctor-modal {
 	}
 
 	.link-doctor-table thead {
+		/* Visually hidden but still read by screen readers; no clip-path, which Obsidian 1.6 only partly supports. */
 		position: absolute;
 		width: 1px;
 		height: 1px;
+		margin: -1px;
+		padding: 0;
+		border: 0;
 		overflow: hidden;
-		clip-path: inset(50%);
+		white-space: nowrap;
 	}
 
 	.link-doctor-table,
