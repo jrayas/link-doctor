@@ -1,12 +1,5 @@
-import { MarkdownView, Notice, Platform, type App, type TFile, type WorkspaceLeaf } from 'obsidian';
+import { MarkdownView, Notice, Platform, type App } from 'obsidian';
 import type { BrokenLink } from '../core/types';
-
-function findOpenLeaf(app: App, file: TFile): WorkspaceLeaf | null {
-	for (const leaf of app.workspace.getLeavesOfType('markdown')) {
-		if (leaf.view instanceof MarkdownView && leaf.view.file?.path === file.path) return leaf;
-	}
-	return null;
-}
 
 /** Opens the note and puts the cursor on the link. Falls back to just opening the note. */
 export async function jumpToLink(app: App, link: BrokenLink, inNewTab = false): Promise<void> {
@@ -18,8 +11,8 @@ export async function jumpToLink(app: App, link: BrokenLink, inNewTab = false): 
 	const from = { line: link.start.line, ch: link.start.col };
 	const to = { line: link.end.line, ch: link.end.col };
 	// The caller decides (from the "Open notes in a new tab" setting) whether to reuse the current tab.
-	// A new tab is always a new tab; otherwise reuse a tab that already shows the note.
-	const leaf = inNewTab ? app.workspace.getLeaf('tab') : (findOpenLeaf(app, file) ?? app.workspace.getLeaf(false));
+	// 'tab' always makes a new tab. `false` is the tab the user is in: Obsidian's own "open here" choice.
+	const leaf = app.workspace.getLeaf(inNewTab ? 'tab' : false);
 	await leaf.openFile(file, { active: true, eState: { line: from.line, cursor: { from, to } } });
 	await app.workspace.revealLeaf(leaf);
 	const view = leaf.view;
