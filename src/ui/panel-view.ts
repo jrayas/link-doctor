@@ -1,8 +1,7 @@
-import { ItemView, setIcon, TFile, type WorkspaceLeaf } from 'obsidian';
+import { ItemView, setIcon, type WorkspaceLeaf } from 'obsidian';
 import { jumpToLink } from '../adapters/navigate';
-import { snippetAround } from '../core/text';
 import type { PanelMode } from '../settings';
-import { computePanelState, contextFor, type PanelRow, type PanelState } from './panel-model';
+import { computePanelState, type PanelRow, type PanelState } from './panel-model';
 import type LinkDoctorPlugin from '../main';
 
 export const PANEL_VIEW_TYPE = 'link-doctor-panel';
@@ -102,13 +101,13 @@ export class PanelView extends ItemView {
 			allBroken: this.mode === 'all' ? service.allBroken() : [],
 			limit: this.limit,
 		});
-		const token = ++this.renderToken;
+		this.renderToken++;
 		this.statusEl.empty();
 		this.listEl.empty();
-		this.renderState(state, token);
+		this.renderState(state);
 	}
 
-	private renderState(state: PanelState, token: number): void {
+	private renderState(state: PanelState): void {
 		const list = this.listEl;
 		const status = this.statusEl;
 		if (!list || !status) return;
@@ -143,7 +142,6 @@ export class PanelView extends ItemView {
 						this.render();
 					});
 				}
-				void this.fillSnippets(state.rows, token);
 			}
 		}
 	}
@@ -170,7 +168,6 @@ export class PanelView extends ItemView {
 		head.createSpan({ cls: 'link-doctor-line', text: `Line ${row.line}` });
 		el.createDiv({ cls: 'link-doctor-link-text', text: row.text });
 		if (this.mode === 'all') el.createDiv({ cls: 'link-doctor-source', text: row.sourcePath });
-		el.createDiv({ cls: 'link-doctor-snippet', attr: { 'data-snippet-for': row.link.id } });
 		const go = () => void jumpToLink(this.app, row.link);
 		el.addEventListener('click', go);
 		el.addEventListener('keydown', (event) => {
@@ -184,27 +181,5 @@ export class PanelView extends ItemView {
 				next?.focus();
 			}
 		});
-	}
-
-	/** Reads each source note once, only for rows on screen, and adds a short context line. */
-	private async fillSnippets(rows: PanelRow[], token: number): Promise<void> {
-		const byPath = new Map<string, PanelRow[]>();
-		for (const row of rows) byPath.set(row.sourcePath, [...(byPath.get(row.sourcePath) ?? []), row]);
-		for (const [path, group] of byPath) {
-			const file = this.app.vault.getAbstractFileByPath(path);
-			if (!(file instanceof TFile)) continue;
-			let text: string;
-			try {
-				text = await this.app.vault.cachedRead(file);
-			} catch {
-				continue; // The file may be mid-sync; the row still works without a snippet.
-			}
-			if (token !== this.renderToken || !this.listEl) return;
-			for (const row of group) {
-				const target = this.listEl.querySelector<HTMLElement>(`[data-snippet-for="${CSS.escape(row.link.id)}"]`);
-				const { start, end } = row.link;
-				target?.setText(contextFor(snippetAround(text, start.offset, end.offset - start.offset), row.text));
-			}
-		}
 	}
 }

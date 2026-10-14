@@ -236,7 +236,7 @@ export class DashboardView extends ItemView {
 		const table = parent.createEl('table', { cls: 'link-doctor-table' });
 		const headRow = table.createEl('thead').createEl('tr');
 		const columns = [...(showNote ? ['Note'] : []), 'Link', 'Type', 'Line', 'Actions'];
-		for (const c of columns) headRow.createEl('th', { text: c, attr: { scope: 'col' } });
+		for (const c of columns) headRow.createEl('th', { text: c, cls: `link-doctor-col-${c.toLowerCase()}`, attr: { scope: 'col' } });
 		const body = table.createEl('tbody');
 		for (const link of links) this.renderRow(body, link, showNote);
 	}

@@ -88,7 +88,7 @@ body.is-mobile .link-doctor-toggle-button {
 	flex-direction: column;
 	gap: var(--size-2-1);
 	min-height: 44px;
-	padding: var(--size-4-2);
+	padding: var(--size-4-1) var(--size-4-2);
 	border: 1px solid var(--background-modifier-border);
 	border-radius: var(--radius-m);
 	cursor: pointer;
@@ -112,6 +112,12 @@ body.is-mobile .link-doctor-toggle-button {
 	font-size: var(--font-ui-smaller);
 }
 
+.link-doctor-row .link-doctor-badge {
+	padding: 0;
+	background: none;
+	font-weight: var(--font-bold);
+}
+
 .link-doctor-badge {
 	padding: 0 var(--size-4-2);
 	border-radius: var(--radius-s);
@@ -129,7 +135,7 @@ body.is-mobile .link-doctor-toggle-button {
 
 .link-doctor-link-text {
 	font-family: var(--font-monospace);
-	font-size: var(--font-ui-small);
+	font-size: var(--font-ui-smaller);
 }
 
 .link-doctor-snippet:empty {
@@ -455,8 +461,15 @@ body.is-mobile .link-doctor-modal {
 .link-doctor-table {
 	width: 100%;
 	border-collapse: collapse;
-	table-layout: auto;
+	table-layout: fixed;
 }
+
+.link-doctor-col-type { width: 11.5em; }
+.link-doctor-col-line { width: 3.5em; }
+.link-doctor-col-actions { width: 7em; }
+.link-doctor-col-note { width: 30%; }
+
+.link-doctor-table td { overflow-wrap: anywhere; }
 
 .link-doctor-table th {
 	text-align: left;
@@ -491,11 +504,9 @@ body.is-mobile .link-doctor-modal {
 
 .link-doctor-cell-line {
 	white-space: nowrap;
-	width: 3em;
 }
 
-.link-doctor-cell-type {
-	width: 1%;
+\.link-doctor-cell-type {
 	white-space: nowrap;
 }
 
