@@ -12,6 +12,7 @@ export class DashboardView extends ItemView {
 	private summaryEl!: HTMLElement;
 	private resultsEl!: HTMLElement;
 	private emptyEl!: HTMLElement;
+	private emptyOpen = true;
 	private statusEl!: HTMLElement;
 	private searchEl!: HTMLInputElement;
 	private folderEl!: HTMLSelectElement;
@@ -167,10 +168,12 @@ export class DashboardView extends ItemView {
 		}
 	}
 
-	/** Notes with no content apart from frontmatter. Collapsed by default so it stays out of the way. */
+	/** Notes with no content apart from frontmatter. Open by default; remembers if you collapse it. */
 	private renderEmptyNotes(paths: string[]): void {
 		if (paths.length === 0) return;
 		const details = this.emptyEl.createEl('details', { cls: 'link-doctor-empty-details' });
+		details.open = this.emptyOpen;
+		details.addEventListener('toggle', () => (this.emptyOpen = details.open));
 		details.createEl('summary', { text: `Empty notes (${paths.length})` });
 		details.createDiv({ cls: 'link-doctor-empty-hint', text: 'These notes have no content apart from frontmatter.' });
 		const list = details.createEl('ul', { cls: 'link-doctor-empty-list' });
