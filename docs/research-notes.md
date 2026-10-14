@@ -126,3 +126,10 @@ Findings and decisions:
 - Swapping in the freshly scanned index used to copy every entry in one go (about 25 ms stall at 5,000 notes). It is now a single pointer swap.
 - Assuming (not measured) that a phone is 3 to 6 times slower than this Mac, the 3 s phone target still has headroom at 5,000 notes. Real-device numbers are still to be recorded by the developer: use the **Rescan** button and the notice timing on a phone.
 - Memory holds only snapshots (paths, link text, headings, block ids), never note bodies. The empty-note check reads the metadata cache, not file contents.
+
+## 11. Release readiness check (Phase 9, 2026-10-14)
+
+- The old "Submission requirements for plugins" page no longer exists; the content is split across *Submit your plugin*, *Manifest* and *Plugin guidelines*. `validate-plugin-entry.yml` is no longer in `obsidian-releases`; submission now goes through community.obsidian.md with automated review, and the docs do not list the individual checks.
+- Rules applied: tag exactly equals `manifest.json` version (no `v`); release assets `main.js`, `manifest.json`, optional `styles.css`; `id` lowercase letters and hyphens only, not containing `obsidian` and not ending in `plugin`; `name` Basic Latin, without "Obsidian" or "Plugin".
+- Name and id `Link Doctor` / `link-doctor` are not in the 8,883-entry `community-plugins.json`. Nearest existing plugins: Broken Links (`broken-links`), Find orphaned files and broken links, Note Doctor. Our differences are in section 3.
+- Full checklist: `docs/release-checklist.md`.

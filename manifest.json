@@ -3,7 +3,7 @@
 	"name": "Link Doctor",
 	"version": "0.1.0",
 	"minAppVersion": "1.7.2",
-	"description": "Find, explain and fix broken links, with previews and undo.",
+	"description": "Find broken links, headings, blocks and embeds, and spot empty notes, in a side panel and a dashboard.",
 	"author": "Dominic",
 	"isDesktopOnly": false
 }

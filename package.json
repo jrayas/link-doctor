@@ -1,7 +1,7 @@
 {
 	"name": "link-doctor",
 	"version": "0.1.0",
-	"description": "Obsidian plugin that finds, explains and fixes broken links.",
+	"description": "Obsidian plugin that finds and reports broken links and empty notes.",
 	"main": "main.js",
 	"type": "module",
 	"scripts": {
