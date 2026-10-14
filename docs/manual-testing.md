@@ -84,7 +84,7 @@ Use `test-vault/`. On a real device, copy the vault and the plugin folder (`.obs
 | 8 | Empty notes list shows `joan`-style notes and **Open** works | | | | |
 | 9 | Settings page is usable; the ignore rules box is full width; Reset asks first | | | | |
 | 10 | `Edge/crlf-note.md` rows report lines 5 and 6 | | | | |
-| 11 | `Edge/Unicode.md`: accented, CJK and emoji names are handled; NFD file names are not falsely reported (create `scripts/make-nfd-fixture.mjs` output first) | | | | |
+| 11 | `Edge/Unicode.md`: accented, CJK and emoji names are handled; NFD file names are not falsely reported (on the desktop run `node scripts/make-nfd-fixture.mjs` first to create the NFD-named file, then copy the vault) | | | | |
 | 12 | Rotate the screen: panel and dashboard re-flow without losing state | | | | |
 | 13 | Switch between light and dark themes and a large user font size: text stays legible, nothing clips | | | | |
 | 14 | Keep the app open while editing a note elsewhere (or let sync run): no errors, no freeze | | | | |
