@@ -37,7 +37,6 @@ export default class LinkDoctorPlugin extends Plugin {
 		this.addSettingTab(new LinkDoctorSettingTab(this.app, this));
 		this.register(() => this.service.dispose());
 
-		this.register(this.fixes.onChange(() => this.dashboards().forEach((d) => d.updateUndo())));
 
 		this.registerView(PANEL_VIEW_TYPE, (leaf) => new PanelView(leaf, this));
 		this.registerView(DASHBOARD_VIEW_TYPE, (leaf) => new DashboardView(leaf, this));

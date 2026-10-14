@@ -17,26 +17,43 @@
 
 .link-doctor-toggle {
 	display: inline-flex;
-	border: 1px solid var(--background-modifier-border);
-	border-radius: var(--radius-m);
-	overflow: hidden;
+	padding: 2px;
+	gap: 2px;
+	border-radius: 999px;
+	background: var(--background-modifier-hover);
 }
 
 .link-doctor-toggle-button {
-	min-width: 44px;
-	min-height: 44px;
-	padding: 0 var(--size-4-4);
+	min-width: 0;
+	min-height: 24px;
+	height: auto;
+	padding: 2px var(--size-4-3);
 	border: 0;
-	border-radius: 0;
+	border-radius: 999px;
 	box-shadow: none;
 	background: transparent;
 	color: var(--text-muted);
-	font-size: var(--font-ui-small);
+	font-size: var(--font-ui-smaller);
+	font-weight: var(--font-medium);
 }
 
 .link-doctor-toggle-button.is-active {
-	background: var(--interactive-accent);
-	color: var(--text-on-accent);
+	background: var(--background-primary);
+	color: var(--text-normal);
+	box-shadow: var(--shadow-s);
+}
+
+/* Touch: keep every target at least 44 px. */
+@media (pointer: coarse) {
+	.link-doctor-toggle-button {
+		min-height: 40px;
+		padding-inline: var(--size-4-5);
+	}
+}
+
+body.is-mobile .link-doctor-toggle-button {
+	min-height: 40px;
+	padding-inline: var(--size-4-5);
 }
 
 .link-doctor-icon-button {
@@ -482,61 +499,12 @@ body.is-mobile .link-doctor-modal {
 	white-space: nowrap;
 }
 
-.link-doctor-suggestion {
-	display: flex;
-	flex-direction: column;
-	gap: var(--size-2-1);
-}
-
-.link-doctor-no-suggestion {
-	color: var(--text-muted);
-}
-
 .link-doctor-actions {
 	display: flex;
 	flex-direction: column;
-	align-items: stretch;
+	align-items: flex-start;
 	gap: var(--size-4-1);
-	min-width: 8.5em;
-}
-
-.link-doctor-detail-row td {
-	background: var(--background-secondary);
-}
-
-.link-doctor-fix-options {
-	display: flex;
-	flex-direction: column;
-	gap: var(--size-4-1);
-}
-
-.link-doctor-fix-button {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: space-between;
-	gap: var(--size-4-2);
-	width: 100%;
-	text-align: left;
-	overflow-wrap: anywhere;
-}
-
-.link-doctor-fix-none {
-	color: var(--text-muted);
-	font-size: var(--font-ui-smaller);
-}
-
-.link-doctor-confidence {
-	font-size: var(--font-ui-smaller);
-	color: var(--text-muted);
-}
-
-.link-doctor-confidence.is-high {
-	color: var(--text-success);
-}
-
-.link-doctor-confidence.is-low {
-	color: var(--text-faint);
+	white-space: nowrap;
 }
 
 /* Below this pane width each row becomes a card. */
@@ -587,9 +555,6 @@ body.is-mobile .link-doctor-modal {
 		flex: 1 1 auto;
 	}
 
-	.link-doctor-detail-row {
-		margin: calc(-1 * var(--size-4-2)) 0 var(--size-4-2);
-	}
 }
 
 /* Settings tab */

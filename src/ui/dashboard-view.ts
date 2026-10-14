@@ -1,25 +1,14 @@
 import { ItemView, setIcon, type WorkspaceLeaf } from 'obsidian';
 import { jumpToLink } from '../adapters/navigate';
 import { BROKEN_TYPE_LABELS, BROKEN_TYPES, type BrokenLink, type BrokenType } from '../core/types';
-import type { Suggestion } from '../core/suggest';
-import { renderFixOptions } from './fix-options';
 import { computeDashboard, defaultQuery, type DashboardModel } from './dashboard-model';
 import type LinkDoctorPlugin from '../main';
 
 export const DASHBOARD_VIEW_TYPE = 'link-doctor-dashboard';
 const PAGE = 100;
-const SLICE_MS = 8;
-const CONFIDENCE = { high: 'High match', medium: 'Medium match', low: 'Low match' } as const;
-
-interface PendingSuggestion {
-	link: BrokenLink;
-	cell: HTMLElement;
-	apply: HTMLButtonElement;
-}
 
 export class DashboardView extends ItemView {
 	private query = defaultQuery();
-	private readonly suggestions = new Map<string, Suggestion | null>();
 	private token = 0;
 	private summaryEl!: HTMLElement;
 	private resultsEl!: HTMLElement;
@@ -28,7 +17,6 @@ export class DashboardView extends ItemView {
 	private folderEl!: HTMLSelectElement;
 	private sortEl!: HTMLSelectElement;
 	private groupEl!: HTMLButtonElement;
-	private undoEl!: HTMLButtonElement;
 	private readonly chipEls = new Map<BrokenType, HTMLButtonElement>();
 
 	constructor(leaf: WorkspaceLeaf, private readonly plugin: LinkDoctorPlugin) {
@@ -68,16 +56,7 @@ export class DashboardView extends ItemView {
 
 	/** Called by the plugin when the index or settings change. Suggestions are recomputed lazily. */
 	refresh(): void {
-		this.suggestions.clear();
 		this.render();
-	}
-
-	/** Enables the undo button only when there is something to undo. */
-	updateUndo(): void {
-		if (!this.undoEl) return;
-		const label = this.plugin.fixes.undoLabel();
-		this.undoEl.disabled = label === null;
-		this.undoEl.setAttribute('aria-label', label ? `Undo: ${label}` : 'Undo last fix');
 	}
 
 	private buildHeader(root: HTMLElement): void {
@@ -87,10 +66,6 @@ export class DashboardView extends ItemView {
 		const rescan = actions.createEl('button', { cls: 'link-doctor-icon-button clickable-icon', attr: { 'aria-label': 'Rescan vault', title: 'Rescan vault' } });
 		setIcon(rescan, 'refresh-cw');
 		rescan.addEventListener('click', () => void this.plugin.rescan());
-		this.undoEl = actions.createEl('button', { cls: 'link-doctor-icon-button clickable-icon', attr: { 'aria-label': 'Undo last fix', title: 'Undo last fix' } });
-		setIcon(this.undoEl, 'undo-2');
-		this.undoEl.addEventListener('click', () => void this.plugin.fixes.undo());
-		this.updateUndo();
 	}
 
 	private buildControls(root: HTMLElement): void {
@@ -147,7 +122,6 @@ export class DashboardView extends ItemView {
 		const status = service.getStatus();
 		this.resultsEl.empty();
 		this.statusEl.empty();
-		this.updateUndo();
 		if (status.state !== 'ready') {
 			this.summaryEl.empty();
 			this.statusEl.setText(status.total > 0 ? `Scanning notes: ${status.done} of ${status.total}…` : 'Scanning notes…');
@@ -170,7 +144,6 @@ export class DashboardView extends ItemView {
 			return;
 		}
 		this.statusEl.setText(`Showing ${model.matching - model.hidden} of ${model.matching} matching broken ${model.matching === 1 ? 'link' : 'links'}`);
-		const pending: PendingSuggestion[] = [];
 		for (const group of model.groups) {
 			const grouped = this.query.groupByNote;
 			const holder = this.resultsEl.createDiv({ cls: 'link-doctor-group' });
@@ -180,7 +153,7 @@ export class DashboardView extends ItemView {
 				const total = service.brokenFor(group.sourcePath).length;
 				head.createSpan({ cls: 'link-doctor-group-count', text: `${total} broken` });
 			}
-			this.renderTable(holder, group.links, !grouped, pending);
+			this.renderTable(holder, group.links, !grouped);
 		}
 		if (model.hidden > 0) {
 			const more = this.resultsEl.createEl('button', { text: `Show ${Math.min(model.hidden, PAGE)} more`, cls: 'link-doctor-more' });
@@ -189,7 +162,6 @@ export class DashboardView extends ItemView {
 				this.render();
 			});
 		}
-		void this.fillSuggestions(pending, token);
 	}
 
 	private renderSummary(model: DashboardModel): void {
@@ -260,78 +232,24 @@ export class DashboardView extends ItemView {
 	}
 
 	/** A real table on wide panes; styles.css turns each row into a card on narrow ones. */
-	private renderTable(parent: HTMLElement, links: BrokenLink[], showNote: boolean, pending: PendingSuggestion[]): void {
+	private renderTable(parent: HTMLElement, links: BrokenLink[], showNote: boolean): void {
 		const table = parent.createEl('table', { cls: 'link-doctor-table' });
 		const headRow = table.createEl('thead').createEl('tr');
-		const columns = [...(showNote ? ['Note'] : []), 'Link', 'Type', 'Line', 'Suggested fix', 'Actions'];
+		const columns = [...(showNote ? ['Note'] : []), 'Link', 'Type', 'Line', 'Actions'];
 		for (const c of columns) headRow.createEl('th', { text: c, attr: { scope: 'col' } });
 		const body = table.createEl('tbody');
-		for (const link of links) this.renderRow(body, link, showNote, columns.length, pending);
+		for (const link of links) this.renderRow(body, link, showNote);
 	}
 
-	private renderRow(body: HTMLElement, link: BrokenLink, showNote: boolean, colSpan: number, pending: PendingSuggestion[]): void {
+	private renderRow(body: HTMLElement, link: BrokenLink, showNote: boolean): void {
 		const tr = body.createEl('tr', { cls: 'link-doctor-table-row' });
 		const cell = (label: string, cls?: string) => tr.createEl('td', { attr: { 'data-label': label }, ...(cls ? { cls } : {}) });
 		if (showNote) cell('Note', 'link-doctor-cell-note').setText(link.sourcePath);
 		cell('Link', 'link-doctor-cell-link').createEl('code', { text: link.original });
 		cell('Type', 'link-doctor-cell-type').createSpan({ cls: 'link-doctor-badge', text: BROKEN_TYPE_LABELS[link.type] });
 		cell('Line', 'link-doctor-cell-line').setText(String(link.start.line + 1));
-		// The flex layout lives on inner wrappers: a td must stay a real table cell.
-		const suggestionCell = cell('Suggested fix').createDiv({ cls: 'link-doctor-suggestion' });
 		const actions = cell('Actions').createDiv({ cls: 'link-doctor-actions' });
-
-		const apply = actions.createEl('button', { text: 'Apply suggestion', cls: 'mod-cta', attr: { disabled: 'true' } });
-		const more = actions.createEl('button', { text: 'More fixes', attr: { 'aria-expanded': 'false' } });
 		const go = actions.createEl('button', { text: 'Go to link' });
 		go.addEventListener('click', () => void jumpToLink(this.app, link, true));
-
-		let detail: HTMLElement | null = null;
-		more.addEventListener('click', () => {
-			if (detail) {
-				detail.remove();
-				detail = null;
-				more.setAttribute('aria-expanded', 'false');
-				return;
-			}
-			const row = createEl('tr', { cls: 'link-doctor-detail-row' });
-			const td = row.createEl('td', { attr: { colspan: String(colSpan) } });
-			renderFixOptions(td.createDiv({ cls: 'link-doctor-fix-options' }), link, this.plugin.fixes);
-			tr.after(row);
-			detail = row;
-			more.setAttribute('aria-expanded', 'true');
-		});
-		pending.push({ link, cell: suggestionCell, apply });
-	}
-
-	/** Works out the best suggestion for each visible row in short slices, so the pane never freezes. */
-	private async fillSuggestions(pending: PendingSuggestion[], token: number): Promise<void> {
-		let sliceStart = performance.now();
-		for (const item of pending) {
-			if (token !== this.token) return;
-			let suggestion = this.suggestions.get(item.link.id);
-			if (suggestion === undefined) {
-				suggestion = this.plugin.fixes.suggestions(item.link, 1)[0] ?? null;
-				this.suggestions.set(item.link.id, suggestion);
-			}
-			this.showSuggestion(item, suggestion);
-			if (performance.now() - sliceStart > SLICE_MS) {
-				await new Promise<void>((resolve) => window.setTimeout(resolve, 0));
-				sliceStart = performance.now();
-			}
-		}
-	}
-
-	private showSuggestion(item: PendingSuggestion, suggestion: Suggestion | null): void {
-		item.cell.empty();
-		if (!suggestion) {
-			item.cell.createSpan({ cls: 'link-doctor-no-suggestion', text: 'No close match' });
-			return;
-		}
-		item.cell.createSpan({ text: suggestion.label });
-		item.cell.createSpan({ cls: `link-doctor-confidence is-${suggestion.confidence}`, text: CONFIDENCE[suggestion.confidence] });
-		item.apply.disabled = false;
-		item.apply.removeAttribute('disabled');
-		item.apply.setAttribute('aria-label', `Apply suggestion: use ${suggestion.label}`);
-		item.apply.addEventListener('click', () => void this.plugin.fixes.run(item.link, { kind: 'apply', suggestion }));
 	}
 }
