@@ -466,8 +466,8 @@ body.is-mobile .link-doctor-modal {
 }
 
 .link-doctor-col-type { width: 10em; }
-.link-doctor-col-line { width: 3.5em; }
-.link-doctor-col-actions { width: 5em; }
+.link-doctor-col-line { width: 4em; }
+.link-doctor-col-actions { width: 7em; }
 .link-doctor-col-note { width: 30%; }
 
 .link-doctor-table td { overflow-wrap: anywhere; }
@@ -509,6 +509,11 @@ body.is-mobile .link-doctor-modal {
 
 \.link-doctor-cell-type {
 	white-space: nowrap;
+}
+
+.link-doctor-actions button {
+	white-space: nowrap;
+	min-width: 4.5em;
 }
 
 .link-doctor-actions {
