@@ -177,7 +177,7 @@ export class DashboardView extends ItemView {
 		for (const path of paths) {
 			const li = list.createEl('li');
 			li.createSpan({ cls: 'link-doctor-empty-path', text: path });
-			const open = li.createEl('button', { text: 'Open', attr: { 'aria-label': `Open ${path}` } });
+			const open = li.createDiv({ cls: 'link-doctor-empty-action' }).createEl('button', { text: 'Open', attr: { 'aria-label': `Open ${path}` } });
 			open.addEventListener('click', () => void this.app.workspace.openLinkText(path, '', 'tab'));
 		}
 	}

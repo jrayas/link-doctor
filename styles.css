@@ -630,9 +630,33 @@ body.is-mobile .link-doctor-modal {
 }
 
 .link-doctor-empty-list button {
-	flex: none;
 	min-height: var(--ld-target, 32px);
+	min-width: 4.5em;
 	white-space: nowrap;
+}
+
+/* Same width and padding as the Actions column, so Open lines up with the Link buttons. */
+.link-doctor-empty-action {
+	flex: none;
+	box-sizing: border-box;
+	width: 7em;
+	padding-left: var(--size-4-2);
+	font-size: var(--font-ui-smaller);
+}
+
+.link-doctor-empty-section {
+	margin-top: var(--size-4-4);
+}
+
+.link-doctor-empty-heading {
+	margin-bottom: var(--size-4-1);
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+	font-weight: var(--font-semibold);
+}
+
+.link-doctor-empty-name {
+	font-family: var(--font-interface);
 }
 
 /* Settings tab */

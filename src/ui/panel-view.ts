@@ -103,6 +103,30 @@ export class PanelView extends ItemView {
 		this.statusEl.empty();
 		this.listEl.empty();
 		this.renderState(state);
+		if (this.mode === 'all' && service.getStatus().state === 'ready') this.renderEmptyNotes(service.emptyNotes());
+	}
+
+	/** In All mode, notes with no content apart from frontmatter; a click opens the note. */
+	private renderEmptyNotes(paths: string[]): void {
+		if (!this.listEl || paths.length === 0) return;
+		const section = this.listEl.createDiv({ cls: 'link-doctor-empty-section' });
+		section.createDiv({ cls: 'link-doctor-empty-heading', text: `Empty notes (${paths.length})` });
+		const ul = section.createEl('ul', { cls: 'link-doctor-rows', attr: { role: 'list' } });
+		for (const path of paths) {
+			const el = ul.createEl('li', { cls: 'link-doctor-item' }).createDiv({
+				cls: 'link-doctor-row',
+				attr: { role: 'button', tabindex: '0', 'aria-label': `Empty note: ${path}. Open` },
+			});
+			el.createDiv({ cls: 'link-doctor-link-text link-doctor-empty-name', text: path });
+			const open = () => void this.app.workspace.openLinkText(path, '', 'tab');
+			el.addEventListener('click', open);
+			el.addEventListener('keydown', (event) => {
+				if (event.key === 'Enter' || event.key === ' ') {
+					event.preventDefault();
+					open();
+				}
+			});
+		}
 	}
 
 	private renderState(state: PanelState): void {
