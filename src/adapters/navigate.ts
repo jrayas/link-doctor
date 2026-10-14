@@ -17,8 +17,6 @@ export async function jumpToLink(app: App, link: BrokenLink, inNewTab = false, c
 	const here = caller ?? app.workspace.getMostRecentLeaf(app.workspace.rootSplit);
 	const reusable = here && !here.getViewState().pinned ? here : null;
 	const leaf = inNewTab || !reusable ? app.workspace.getLeaf('tab') : reusable;
-	// TEMPORARY DIAGNOSTIC: remove once the tab behaviour is confirmed.
-	new Notice(`new tab setting: ${String(inNewTab)}; target view before opening: ${leaf.view.getViewType()}`, 6000);
 	await leaf.openFile(file, { active: true, eState: { line: from.line, cursor: { from, to } } });
 	await app.workspace.revealLeaf(leaf);
 	const view = leaf.view;

@@ -68,4 +68,5 @@ Open Settings, then Link Doctor.
 7. Turn off **Confirm before applying a fix**: fixes apply at once with an Undo notice.
 8. **Reset to defaults** asks for confirmation, then restores everything, including the ignore rules.
 9. Edit `data.json` in the plugin folder to something broken, for example `{"fuzzyThreshold": "high", "ignoreRules": 5}`, and reload: the plugin loads with defaults for those fields and no errors in the console.
+10. **Open notes in a new tab**: on, the dashboard **Link** and **Open** buttons and the panel rows each open a new tab. Off, the dashboard buttons replace the dashboard in its own tab, and panel rows reuse the last main-area tab (a pinned tab always gets a new tab instead). Repeat on desktop, in mobile emulation and on a real phone and tablet; on a phone the right sidebar closes after a jump.
 10. On a phone-width window the settings page stays usable and the rules box is full width.
