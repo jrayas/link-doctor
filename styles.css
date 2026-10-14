@@ -458,11 +458,12 @@ body.is-mobile .link-doctor-modal {
 	white-space: nowrap;
 }
 
-/* Lines the count up with the Actions column below. */
-.link-doctor-group-head .link-doctor-group-count {
-	flex: 0 0 7em;
-	box-sizing: border-box;
-	padding-left: var(--size-4-2);
+/* The per-note total sits under its table, lined up with the Actions column. */
+.link-doctor-group-foot {
+	padding: var(--size-4-1) var(--size-4-2) 0 0;
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+	text-align: right;
 }
 
 /* Table: real cells (never display:flex on a td), headings never break mid-word. */
@@ -533,11 +534,6 @@ body.is-mobile .link-doctor-modal {
 
 /* Below this pane width each row becomes a card. */
 @container (max-width: 520px) {
-	.link-doctor-group-head .link-doctor-group-count {
-		flex: 0 0 auto;
-		padding-left: 0;
-	}
-
 	.link-doctor-table thead {
 		position: absolute;
 		width: 1px;

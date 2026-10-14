@@ -147,10 +147,12 @@ export class DashboardView extends ItemView {
 			if (grouped) {
 				const head = holder.createDiv({ cls: 'link-doctor-group-head', attr: { role: 'heading', 'aria-level': '3' } });
 				head.createSpan({ cls: 'link-doctor-group-path', text: group.sourcePath });
-				const total = service.brokenFor(group.sourcePath).length;
-				head.createSpan({ cls: 'link-doctor-group-count', text: `${total} broken` });
 			}
 			this.renderTable(holder, group.links, !grouped);
+			if (grouped) {
+				const total = service.brokenFor(group.sourcePath).length;
+				holder.createDiv({ cls: 'link-doctor-group-foot', text: `${total} broken` });
+			}
 		}
 		if (model.hidden > 0) {
 			const more = this.resultsEl.createEl('button', { text: `Show ${Math.min(model.hidden, PAGE)} more`, cls: 'link-doctor-more' });
