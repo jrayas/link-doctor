@@ -5,7 +5,7 @@ Checked against the current Obsidian developer docs on 2026-10-14 (Submit your p
 ## Repository files
 
 - [x] `README.md` describes purpose, usage, settings, limitations and privacy.
-- [x] `LICENSE` is MIT. **Replace "Dominic" with your legal name or handle if you want.**
+- [x] `LICENSE` is MIT, copyright Anthirayas (the GitHub profile name).
 - [x] `manifest.json` is at the repository root.
 
 ## Manifest rules
@@ -18,7 +18,7 @@ Checked against the current Obsidian developer docs on 2026-10-14 (Submit your p
 | `version` is `x.y.z` | `0.1.0`: ok |
 | `minAppVersion` is set and truthful | `1.7.2` (lint rule `no-unsupported-api` enforces it) |
 | `isDesktopOnly` is `false` and no Node or Electron API is used | `check:bundle` scans the built `main.js` on every `verify` run |
-| `author` is set | `Dominic` is a placeholder: **confirm before submitting**. Optionally add `authorUrl` and `fundingUrl`. |
+| `author` is set | `Anthirayas`, with `authorUrl` https://github.com/jrayas. Optionally add `fundingUrl`. |
 | `description` is accurate | Reviewed after the UI dropped its fix buttons |
 | `versions.json` maps each version to its `minAppVersion` | `{"0.1.0": "1.7.2"}` |
 
@@ -36,7 +36,7 @@ Checked against the current Obsidian developer docs on 2026-10-14 (Submit your p
 
 ## Before the first release
 
-1. Confirm the author name, the licence holder and the repository location. `git remote` is empty: create the GitHub repository and push.
+1. Create the GitHub repository under the `jrayas` account and push (`git remote` is empty).
 2. Run `npm run verify` on macOS, Windows and Ubuntu (the `verify` workflow does this on push).
 3. Run the real-device checklist in `docs/manual-testing.md` on at least one iOS and one Android device, and record the results.
 4. Decide about fixing. The panel and dashboard are read-only at the moment, but the settings page still has **Match strictness** and **Confirm before applying a fix**, which do nothing visible. Either bring the fix actions back or remove those settings and the "Undo last fix" command before submission.
