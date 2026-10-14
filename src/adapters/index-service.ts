@@ -54,7 +54,8 @@ function structureSignature(note: NoteSnapshot | undefined): string {
  * vault from the in-memory index (no file reads).
  */
 export class IndexService {
-	readonly index = new VaultIndex();
+	/** Replaced as a whole after a full scan, so always read it through the service. */
+	index = new VaultIndex();
 	private readonly broken = new Map<string, BrokenLink[]>();
 	private readonly linkCounts = new Map<string, number>();
 	private readonly listeners = new Set<(event: IndexEvent) => void>();
@@ -201,10 +202,9 @@ export class IndexService {
 		this.scheduleFullPass();
 	}
 
+	/** One pointer change instead of copying every entry, so a big vault does not stall the UI here. */
 	private swapIndex(fresh: VaultIndex): void {
-		for (const path of this.index.allFiles()) this.index.removeFile(path);
-		for (const path of fresh.allFiles()) this.index.addFile(path);
-		for (const note of fresh.allNotes()) this.index.setNote(note);
+		this.index = fresh;
 	}
 
 	private recheckNote(note: NoteSnapshot): void {

@@ -1,6 +1,6 @@
 # Manual testing
 
-Expanded in Phase 8 (mobile emulation, real-device checklist). Current checks:
+Checks per phase, then the Phase 8 mobile and cross-platform section at the end.
 
 ## Install the build into the fixture vault
 
@@ -34,26 +34,16 @@ Open each note listed below and run **Link doctor: Show diagnostics for the curr
 - `Broken/Missing notes.md`: are links inside code spans or fences absent from the cache?
 - `Edge/crlf-note.md`: are the reported lines 5 and 6?
 
-## Phases 5 and 6: dashboard, fixes, preview and undo
+## Phase 6: dashboard
 
-Fixes live in the dashboard; the side panel only lists and jumps. Run these on a copy of the fixture vault, or restore it afterwards with `git checkout test-vault`.
-
-Open the dashboard with the toolbar button in the side panel, or the command **Open dashboard**.
+Open the dashboard with the toolbar button in the side panel, or the command **Open dashboard**. The dashboard and panel only list and jump; the fix engine (suggest, preview, apply, undo) is still in the code and covered by unit tests, but has no buttons since the developer asked for fixing to be removed from the UI. The command **Undo last fix** remains.
 
 1. The summary shows notes, links, broken count and healthy percentage, a bar, the notes with the most broken links, and one chip per link type with its count.
 2. **Search**: type `healthy` and the list filters as you type. Click a chip to filter by type (click again to clear). Pick a folder. Change **Sort by**. Toggle **Grouped by note**. Tap a note under "Notes with the most broken links" to filter to it. "Nothing matches" offers **Clear filters**.
-3. Each row shows the link, its type, the line, a suggested fix with a High, Medium or Low match label, and the buttons **Apply suggestion**, **More fixes** and **Go to link**. Suggestions appear a moment after the list.
-4. `[[Healthy nots]]`: **Apply suggestion** opens a preview with Before and After lines. **Cancel** changes nothing. **Apply fix** rewrites the link, and a notice with an **Undo** button appears.
-5. Undo from the notice, from the undo icon in the dashboard header, or with the command **Undo last fix**: the original text returns exactly.
-6. **More fixes** shows up to three suggestions, **Create missing note** (missing notes only) and **Remove link, keep text**.
-7. `[[Healthy note#Section won]]`: only the heading part changes, an alias is kept. `[bad heading](Healthy%20note.md#Nope)` stays a Markdown link.
-8. `Edge/crlf-note.md`: fix or remove a link, then confirm the file still has CRLF endings and undo restores it exactly.
-9. Create missing note on `[[Does not exist]]`: the preview shows the path (Obsidian's "default location for new notes" decides the folder). Undo moves the empty note to the trash. Type in it first and undo again: it must refuse.
-10. `[[What? A:note]]`: the preview warns about the sanitised file name.
-11. Edit the note while a preview is open, then apply: "The note has changed since the scan" and no edit.
-12. **Go to link** opens the note in a new tab with the link selected and does not replace the dashboard.
-13. Phone width (`this.app.emulateMobile(true)` and a narrow pane): the table becomes cards, buttons are at least 44 px tall, the preview modal scrolls and its buttons stay reachable.
-14. With *Confirm before applying* off (edit `data.json` to `"confirmBeforeFix": false` until the Phase 7 settings tab exists): fixes apply immediately with an Undo notice.
+3. Every group's Type, Line and Actions columns line up, and "N broken" sits under the Actions column. A long type such as the Markdown target shows as **Missing target** with the full name on hover.
+4. **Link** opens the note with the link selected (new tab or this tab: see the setting under Phase 7).
+5. **Empty notes (N)** is open by default and lists notes with only frontmatter or blank lines; **Open** lines up with the **Link** buttons. In the panel's **All** mode the same notes are listed under the broken links.
+6. Phone width (see Phase 8): the table becomes cards and buttons are at least 44 px tall.
 
 ## Phase 7: settings
 
@@ -69,4 +59,45 @@ Open Settings, then Link Doctor.
 8. **Reset to defaults** asks for confirmation, then restores everything, including the ignore rules.
 9. Edit `data.json` in the plugin folder to something broken, for example `{"fuzzyThreshold": "high", "ignoreRules": 5}`, and reload: the plugin loads with defaults for those fields and no errors in the console.
 10. **Open notes in a new tab**: on, the dashboard **Link** and **Open** buttons and the panel rows each open a new tab. Off, the dashboard buttons replace the dashboard in its own tab, and panel rows reuse the last main-area tab (a pinned tab always gets a new tab instead). Repeat on desktop, in mobile emulation and on a real phone and tablet; on a phone the right sidebar closes after a jump.
-10. On a phone-width window the settings page stays usable and the rules box is full width.
+11. On a phone-width window the settings page stays usable and the rules box is full width.
+
+## Phase 8: mobile emulation (desktop, nothing to install)
+
+1. Open `test-vault/` in Obsidian on a desktop and open the developer console (`Cmd+Option+I` on macOS, `Ctrl+Shift+I` on Windows and Linux).
+2. Run `this.app.emulateMobile(true)` and reload the app. Obsidian now uses its phone layout (`body.is-mobile`). Run `this.app.emulateMobile(false)` and reload to go back.
+3. Narrow the window to about 320 to 400 px wide to mimic a phone, then widen it to about 800 px for a tablet.
+4. Run the checklist below. Emulation is not a real iOS or Android engine, so it does not replace the real-device pass.
+
+## Phase 8: checklist (emulation and real devices)
+
+Use `test-vault/`. On a real device, copy the vault and the plugin folder (`.obsidian/plugins/link-doctor` with `main.js`, `manifest.json`, `styles.css`) across, for example with iCloud Drive and Files on iOS, or a USB copy on Android, then enable the plugin.
+
+| # | Check | iPhone | iPad | Android phone | Android tablet |
+|---|---|---|---|---|---|
+| 1 | Open the panel from the ribbon or the command palette; it is readable and rows are easy to tap | | | | |
+| 2 | Open `Broken/Missing notes.md`; Current shows 3 rows; switch to another note and the panel follows | | | | |
+| 3 | Current / All toggle works by tap; the control is easy to hit | | | | |
+| 4 | Tap a row: the note opens with the link selected; on a phone the sidebar closes | | | | |
+| 5 | Open the dashboard from the panel; search, chips, folder, sort and grouping all work by tap | | | | |
+| 6 | Dashboard layout: table or cards, no sideways scrolling, buttons at least 44 px | | | | |
+| 7 | **Link** opens the note; the **Open notes in a new tab** setting switches between a new tab and this tab | | | | |
+| 8 | Empty notes list shows `joan`-style notes and **Open** works | | | | |
+| 9 | Settings page is usable; the ignore rules box is full width; Reset asks first | | | | |
+| 10 | `Edge/crlf-note.md` rows report lines 5 and 6 | | | | |
+| 11 | `Edge/Unicode.md`: accented, CJK and emoji names are handled; NFD file names are not falsely reported (create `scripts/make-nfd-fixture.mjs` output first) | | | | |
+| 12 | Rotate the screen: panel and dashboard re-flow without losing state | | | | |
+| 13 | Switch between light and dark themes and a large user font size: text stays legible, nothing clips | | | | |
+| 14 | Keep the app open while editing a note elsewhere (or let sync run): no errors, no freeze | | | | |
+| 15 | Turn the plugin off and on: panels and dashboard close cleanly; no console errors | | | | |
+
+## Phase 8: keyboard and screen reader (desktop)
+
+1. Tab through the panel: toggle, rescan, dashboard button, then each row. Enter or Space on a row jumps; the arrow keys move between rows.
+2. Tab through the dashboard: header buttons, search, chips (state announced as pressed), folder, sort, group toggle, each **Link** button, and the **Empty notes** summary (Enter opens or closes it).
+3. With VoiceOver (macOS) or NVDA (Windows): rows announce "type: link, note, line N. Go to link"; the status line is announced when scanning finishes; the type badge reads its full name.
+
+## Phase 8: performance and cleanup (developer, any platform)
+
+- `npm run bench` prints scan time, slice length, single-edit time and memory for a synthetic 5,000-note vault. Results are recorded in `docs/research-notes.md` section 10.
+- The automated `tests/unit/lifecycle.test.ts` fails if any Obsidian event is registered outside `registerEvent`, or a global listener, interval or stray timer appears.
+- `npm run check:bundle` scans the built `main.js` for Node and Electron APIs and regex lookbehind.

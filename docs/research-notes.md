@@ -110,10 +110,19 @@ Highest `@since` among APIs we plan to use: `getFileByPath`/`getFolderByPath` 1.
 | D11 | Fuzzy matching: own small scorer (normalised NFC + case-folded, trigram/Levenshtein blend) in pure code, not `prepareFuzzySearch`. | `prepareFuzzySearch` is not available to pure/unit-tested code and gives no calibrated confidence. |
 | D12 | Line numbers from the cache's `position.start.line`; context snippet read lazily from the file only for visible rows. | Avoids reading every file. |
 
-## 10. Performance (to be filled in during Phase 8)
+## 10. Performance
 
-Target (proposed): first full scan of a 5,000-note / ~50,000-link synthetic vault under 1 s of pure-engine time on desktop and under 3 s on a mid-range phone equivalent, in chunks of ≤ 8 ms per frame; incremental update for a single edited note under 10 ms.
+Run `npm run bench` (any platform; `BENCH_NOTES` and `BENCH_LINKS` change the size, `BENCH_SLICES=1` prints each slice). It builds a seeded synthetic vault (50 folders, about 5 % of links broken, a mix of plain, heading and path links) and drives the real `IndexService`. It measures the engine only: Obsidian's own metadata-cache indexing happens before and is not ours.
 
-| Date | Notes | Links | Scan time | Machine |
-|---|---|---|---|---|
-| — | — | — | pending | — |
+Targets: first full scan of 5,000 notes / 50,000 links under 1 s of engine time on desktop and under 3 s on a mid-range phone; time slices of about 8 ms so the UI keeps painting; a single-note edit under 10 ms.
+
+| Date | Notes | Links | Scan wall time | Pure detect | Slice (typical, first) | Single edit median | Heap growth | Machine |
+|---|---|---|---|---|---|---|---|---|
+| 2026-10-14 | 5,000 | 50,000 | 190 ms | 131 ms | 8 ms, 17 ms | 0.03 ms | 19 MB | Apple silicon Mac, Node 22 |
+| 2026-10-14 | 20,000 | 200,000 | 775 ms | n/a | n/a | n/a | 38 MB | Apple silicon Mac, Node 22 |
+
+Findings and decisions:
+- The first slice is about 17 ms because of JIT warm-up and registering every path; the rest sit at the 8 ms budget.
+- Swapping in the freshly scanned index used to copy every entry in one go (about 25 ms stall at 5,000 notes). It is now a single pointer swap.
+- Assuming (not measured) that a phone is 3 to 6 times slower than this Mac, the 3 s phone target still has headroom at 5,000 notes. Real-device numbers are still to be recorded by the developer: use the **Rescan** button and the notice timing on a phone.
+- Memory holds only snapshots (paths, link text, headings, block ids), never note bodies. The empty-note check reads the metadata cache, not file contents.

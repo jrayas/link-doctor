@@ -76,6 +76,8 @@ export default class LinkDoctorPlugin extends Plugin {
 	}
 
 	onunload(): void {
+		// A refresh still waiting on its debounce would otherwise fire against closed views.
+		(this.refreshPanels as Debouncer<[], void> | undefined)?.cancel();
 		this.service?.dispose();
 	}
 
