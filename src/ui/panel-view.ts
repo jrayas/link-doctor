@@ -9,7 +9,6 @@ const ROW_LIMIT = 100;
 
 export class PanelView extends ItemView {
 	private mode: PanelMode;
-	private renderToken = 0;
 	private listEl: HTMLElement | null = null;
 	private statusEl: HTMLElement | null = null;
 	private modeButtons = new Map<PanelMode, HTMLButtonElement>();
@@ -44,7 +43,6 @@ export class PanelView extends ItemView {
 	}
 
 	onClose(): Promise<void> {
-		this.renderToken++;
 		this.contentEl.empty();
 		return Promise.resolve();
 	}
@@ -101,7 +99,6 @@ export class PanelView extends ItemView {
 			allBroken: this.mode === 'all' ? service.allBroken() : [],
 			limit: this.limit,
 		});
-		this.renderToken++;
 		this.statusEl.empty();
 		this.listEl.empty();
 		this.renderState(state);

@@ -9,7 +9,6 @@ const PAGE = 100;
 
 export class DashboardView extends ItemView {
 	private query = defaultQuery();
-	private token = 0;
 	private summaryEl!: HTMLElement;
 	private resultsEl!: HTMLElement;
 	private statusEl!: HTMLElement;
@@ -49,7 +48,6 @@ export class DashboardView extends ItemView {
 	}
 
 	onClose(): Promise<void> {
-		this.token++;
 		this.contentEl.empty();
 		return Promise.resolve();
 	}
@@ -117,7 +115,6 @@ export class DashboardView extends ItemView {
 
 	private render(): void {
 		if (!this.resultsEl) return;
-		const token = ++this.token;
 		const service = this.plugin.service;
 		const status = service.getStatus();
 		this.resultsEl.empty();
