@@ -13,17 +13,15 @@ describe('validateSettings', () => {
 			defaultPanelMode: 'all',
 			rememberLastMode: true,
 			lastPanelMode: 'all',
-			fuzzyThreshold: 0.7,
 			autoRefresh: false,
 			debounceMs: 900,
-			confirmBeforeFix: false,
 			openInNewTab: false,
 			ignoreRules: ['Templates/', '*.canvas'],
 			enabledTypes: { 'missing-embed': false },
 		});
 		expect(s).toMatchObject({
-			defaultPanelMode: 'all', rememberLastMode: true, lastPanelMode: 'all', fuzzyThreshold: 0.7,
-			autoRefresh: false, debounceMs: 900, confirmBeforeFix: false, openInNewTab: false, ignoreRules: ['Templates/', '*.canvas'],
+			defaultPanelMode: 'all', rememberLastMode: true, lastPanelMode: 'all',
+			autoRefresh: false, debounceMs: 900, openInNewTab: false, ignoreRules: ['Templates/', '*.canvas'],
 		});
 		expect(s.enabledTypes['missing-embed']).toBe(false);
 		expect(s.enabledTypes['missing-note']).toBe(true);
@@ -33,7 +31,6 @@ describe('validateSettings', () => {
 		const s = validateSettings({
 			defaultPanelMode: 'sideways',
 			rememberLastMode: 'yes',
-			fuzzyThreshold: 'high',
 			debounceMs: NaN,
 			autoRefresh: 1,
 			enabledTypes: { 'missing-note': 'no', bogus: false },
@@ -42,9 +39,14 @@ describe('validateSettings', () => {
 		expect(s).toEqual(defaultSettings());
 	});
 
+	it('ignores settings from older versions that no longer exist', () => {
+		const s = validateSettings({ fuzzyThreshold: 0.7, confirmBeforeFix: false });
+		expect(s).toEqual(defaultSettings());
+		expect(s).not.toHaveProperty('fuzzyThreshold');
+		expect(s).not.toHaveProperty('confirmBeforeFix');
+	});
+
 	it('clamps numbers into range', () => {
-		expect(validateSettings({ fuzzyThreshold: 5 }).fuzzyThreshold).toBe(0.95);
-		expect(validateSettings({ fuzzyThreshold: -1 }).fuzzyThreshold).toBe(0.2);
 		expect(validateSettings({ debounceMs: 1 }).debounceMs).toBe(100);
 		expect(validateSettings({ debounceMs: 99999.7 }).debounceMs).toBe(5000);
 		expect(Number.isInteger(validateSettings({ debounceMs: 250.6 }).debounceMs)).toBe(true);

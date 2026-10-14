@@ -39,7 +39,7 @@ Checked against the current Obsidian developer docs on 2026-10-14 (Submit your p
 1. Create the GitHub repository under the `jrayas` account and push (`git remote` is empty).
 2. Run `npm run verify` on macOS, Windows and Ubuntu (the `verify` workflow does this on push).
 3. Run the real-device checklist in `docs/manual-testing.md` on at least one iOS and one Android device, and record the results.
-4. Decide about fixing. The panel and dashboard are read-only at the moment, but the settings page still has **Match strictness** and **Confirm before applying a fix**, which do nothing visible. Either bring the fix actions back or remove those settings and the "Undo last fix" command before submission.
+4. ~~Decide about fixing.~~ Done: 0.1.1 is a read-only finder; the fix engine and its two settings were removed.
 5. Bump the version with `npm version <x.y.z>` (this updates `manifest.json` and `versions.json`), commit, then tag with exactly that version, no `v` prefix: `git tag 0.1.0 && git push --tags`.
 6. The release workflow builds, checks the tag equals the manifest version, attests `main.js` and `styles.css`, and creates a **draft** release with `main.js`, `manifest.json` and `styles.css`. Review and publish the draft.
 7. Sign in at community.obsidian.md, link your GitHub account and add the plugin. The directory reads `manifest.json` from the default branch, so commit the final version first.

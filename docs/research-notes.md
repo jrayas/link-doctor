@@ -133,3 +133,7 @@ Findings and decisions:
 - Rules applied: tag exactly equals `manifest.json` version (no `v`); release assets `main.js`, `manifest.json`, optional `styles.css`; `id` lowercase letters and hyphens only, not containing `obsidian` and not ending in `plugin`; `name` Basic Latin, without "Obsidian" or "Plugin".
 - Name and id `Link Doctor` / `link-doctor` are not in the 8,883-entry `community-plugins.json`. Nearest existing plugins: Broken Links (`broken-links`), Find orphaned files and broken links, Note Doctor. Our differences are in section 3.
 - Full checklist: `docs/release-checklist.md`.
+
+## 12. Decision D13: read-only finder (0.1.1)
+
+At the developer's request fix actions were removed from the panel and dashboard in 0.1.0 development, and in 0.1.1 the unused fix engine was deleted: suggestion scoring (`fuzzy`, `suggest`), link rewriting, text edits, undo stack, the preview modal and the **Match strictness** and **Confirm before applying a fix** settings. The plugin now never writes to a note, which also removes the `Vault.process` and Editor edit paths from the review surface. The code remains in git history (tag `0.1.0`, commit before this decision) if fixing is wanted later. This departs from section 2C of the original brief by the developer's choice.

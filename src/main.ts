@@ -1,6 +1,4 @@
 import { debounce, MarkdownView, Notice, FileView, Plugin, type Debouncer, type WorkspaceLeaf } from 'obsidian';
-import { createFixHost } from './adapters/obsidian-fix-host';
-import { FixService } from './adapters/fix-service';
 import { createVaultPort, wireVaultEvents } from './adapters/obsidian-port';
 import { IndexService } from './adapters/index-service';
 import { compileIgnoreRules } from './core/ignore';
@@ -13,7 +11,6 @@ import { defaultSettings, enabledTypeSet, startingMode, validateSettings, type L
 export default class LinkDoctorPlugin extends Plugin {
 	settings: LinkDoctorSettings = defaultSettings();
 	service!: IndexService;
-	fixes!: FixService;
 	/** Path of the note (or file) the panel describes. Kept when focus moves to a sidebar. */
 	currentPath: string | null = null;
 	private ignored: (path: string) => boolean = () => false;
@@ -25,11 +22,6 @@ export default class LinkDoctorPlugin extends Plugin {
 			enabledTypes: enabledTypeSet(this.settings),
 			isIgnored: this.ignored,
 		}));
-		this.fixes = new FixService(
-			createFixHost(this.app),
-			() => this.service.index,
-			() => this.settings,
-		);
 		this.applySettings();
 
 		this.buildRefresh();
@@ -42,15 +34,6 @@ export default class LinkDoctorPlugin extends Plugin {
 		this.registerView(DASHBOARD_VIEW_TYPE, (leaf) => new DashboardView(leaf, this));
 		this.addRibbonIcon('stethoscope', 'Open link doctor', () => void this.activatePanel());
 		this.addCommand({ id: 'open-panel', name: 'Open panel', callback: () => void this.activatePanel() });
-		this.addCommand({
-			id: 'undo-last-fix',
-			name: 'Undo last fix',
-			checkCallback: (checking) => {
-				if (!this.fixes.canUndo()) return false;
-				if (!checking) void this.fixes.undo();
-				return true;
-			},
-		});
 		this.addCommand({ id: 'rescan', name: 'Rescan vault', callback: () => void this.rescan() });
 		this.addCommand({
 			id: 'show-diagnostics',

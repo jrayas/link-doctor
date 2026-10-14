@@ -2,7 +2,6 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { detectAll } from '../../src/core/detect';
 import { compileIgnoreRules } from '../../src/core/ignore';
-import { suggestFor } from '../../src/core/suggest';
 import type { BrokenType } from '../../src/core/types';
 import { loadFixtureVault } from '../helpers/fixture-loader';
 
@@ -74,21 +73,5 @@ describe('fixture vault', () => {
 		for (const b of detectAll(index).filter((x) => x.sourcePath === 'Edge/crlf-note.md')) {
 			expect(text.slice(b.start.offset, b.end.offset)).toBe(b.original);
 		}
-	});
-
-	it('suggests the intended fix for each typo', () => {
-		const all = detectAll(index);
-		const find = (original: string) => all.find((b) => b.original === original);
-		const top = (original: string) => {
-			const b = find(original);
-			if (!b) throw new Error(`missing ${original}`);
-			return suggestFor(b, index, { threshold: 0.4, limit: 3 })[0];
-		};
-		expect(top('[[Healthy nots]]')?.targetPath).toBe('Healthy note.md');
-		expect(top('[[Healthy note#Section won]]')?.newSubpath).toBe('#Section one');
-		expect(top('[[Healthy note#^block-b]]')?.newSubpath).toBe('#^block-a');
-		expect(top('[[Cafe]]')?.targetPath).toBe('Edge/Café.md');
-		expect(top('[[Healthy alias]]')?.targetPath).toBe('Healthy note.md');
-		expect(top('[[日本語のノート]]')?.targetPath).toBe('Edge/日本語ノート.md');
 	});
 });

@@ -31,7 +31,7 @@ Choose the panel's starting mode, open notes in a new tab or the current one, sw
 ## Good to know
 
 - It reads Obsidian's own index, so a brand-new note may take a moment to appear. Press **Rescan vault** if something looks stale.
-- It finds broken links and takes you to them. It doesn't fix them for you.
+- It finds broken links and takes you to them. It never changes your notes: there are no fix buttons, by design.
 
 ## Install
 

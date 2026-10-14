@@ -1,7 +1,7 @@
 import { debounce, PluginSettingTab, Setting, type App } from 'obsidian';
 import { findRegexLikeRules } from '../core/ignore';
 import { BROKEN_TYPE_LABELS, BROKEN_TYPES } from '../core/types';
-import { DEBOUNCE_RANGE, defaultSettings, FUZZY_RANGE, validateSettings } from '../settings';
+import { DEBOUNCE_RANGE, defaultSettings, validateSettings } from '../settings';
 import { ConfirmModal } from './confirm-modal';
 import type LinkDoctorPlugin from '../main';
 
@@ -95,21 +95,6 @@ export class LinkDoctorSettingTab extends PluginSettingTab {
 		containerEl.appendChild(ruleStatus);
 		describeRules();
 
-		new Setting(containerEl).setName('Suggestions').setHeading();
-		new Setting(containerEl)
-			.setName('Match strictness')
-			.setDesc('Higher values suggest only very close matches. Lower values suggest more, but less certain, ones.')
-			.addSlider((s) =>
-				s
-					.setLimits(Math.round(FUZZY_RANGE.min * 100), Math.round(FUZZY_RANGE.max * 100), 5)
-					.setValue(Math.round(settings.fuzzyThreshold * 100))
-					.setDynamicTooltip()
-					.onChange((value) => {
-						settings.fuzzyThreshold = value / 100;
-						save(false);
-					}),
-			);
-
 		new Setting(containerEl).setName('Refreshing').setHeading();
 		let delaySetting: Setting;
 		new Setting(containerEl)
@@ -137,17 +122,6 @@ export class LinkDoctorSettingTab extends PluginSettingTab {
 					}),
 			)
 			.setDisabled(!settings.autoRefresh);
-
-		new Setting(containerEl).setName('Fixes').setHeading();
-		new Setting(containerEl)
-			.setName('Confirm before applying a fix')
-			.setDesc('Show a before and after preview first. Every fix can be undone either way.')
-			.addToggle((t) =>
-				t.setValue(settings.confirmBeforeFix).onChange((value) => {
-					settings.confirmBeforeFix = value;
-					save(false);
-				}),
-			);
 
 		new Setting(containerEl)
 			.setName('Reset to defaults')

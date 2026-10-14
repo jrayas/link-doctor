@@ -36,7 +36,7 @@ Open each note listed below and run **Link doctor: Show diagnostics for the curr
 
 ## Phase 6: dashboard
 
-Open the dashboard with the toolbar button in the side panel, or the command **Open dashboard**. The dashboard and panel only list and jump; the fix engine (suggest, preview, apply, undo) is still in the code and covered by unit tests, but has no buttons since the developer asked for fixing to be removed from the UI. The command **Undo last fix** remains.
+Open the dashboard with the toolbar button in the side panel, or the command **Open dashboard**. The dashboard and panel only list and jump. The plugin never edits notes (the fix engine was removed in 0.1.1), so there is no preview, apply or undo to test.
 
 1. The summary shows notes, links, broken count and healthy percentage, a bar, the notes with the most broken links, and one chip per link type with its count.
 2. **Search**: type `healthy` and the list filters as you type. Click a chip to filter by type (click again to clear). Pick a folder. Change **Sort by**. Toggle **Grouped by note**. Tap a note under "Notes with the most broken links" to filter to it. "Nothing matches" offers **Clear filters**.
@@ -52,14 +52,12 @@ Open Settings, then Link Doctor.
 1. Add `Templates/` under **Ignored folders and patterns**: after about a second the dashboard total drops from 23 to 21 and `Templates/Template.md` disappears. A line such as `^Archive/.*$` shows a note that regular expressions are not supported.
 2. Switch off **Missing embed** under **Link types to check**: embeds vanish from the panel and dashboard. Switch it back on.
 3. Set **Default panel mode** to All, close and reopen the panel: it opens in All. Turn on **Remember last panel mode**, switch to Current, reload: it starts in Current.
-4. **Match strictness**: at the high end `[[Healthy nots]]` still gets a suggestion, `[[Cafe]]` may not. At the low end more suggestions appear.
-5. Turn off **Refresh automatically**: the refresh delay slider greys out and edits no longer update results until you press the rescan button. Turn it back on: a rescan runs.
-6. Change **Refresh delay** to 3000: results update about three seconds after an edit.
-7. Turn off **Confirm before applying a fix**: fixes apply at once with an Undo notice.
-8. **Reset to defaults** asks for confirmation, then restores everything, including the ignore rules.
-9. Edit `data.json` in the plugin folder to something broken, for example `{"fuzzyThreshold": "high", "ignoreRules": 5}`, and reload: the plugin loads with defaults for those fields and no errors in the console.
-10. **Open notes in a new tab**: on, the dashboard **Link** and **Open** buttons and the panel rows each open a new tab. Off, the dashboard buttons replace the dashboard in its own tab, and panel rows reuse the last main-area tab (a pinned tab always gets a new tab instead). Repeat on desktop, in mobile emulation and on a real phone and tablet; on a phone the right sidebar closes after a jump.
-11. On a phone-width window the settings page stays usable and the rules box is full width.
+4. Turn off **Refresh automatically**: the refresh delay slider greys out and edits no longer update results until you press the rescan button. Turn it back on: a rescan runs.
+5. Change **Refresh delay** to 3000: results update about three seconds after an edit.
+6. **Reset to defaults** asks for confirmation, then restores everything, including the ignore rules.
+7. Edit `data.json` in the plugin folder to something broken, for example `{"fuzzyThreshold": "high", "ignoreRules": 5}`, and reload: the plugin loads with defaults for those fields and no errors in the console.
+8. **Open notes in a new tab**: on, the dashboard **Link** and **Open** buttons and the panel rows each open a new tab. Off, the dashboard buttons replace the dashboard in its own tab, and panel rows reuse the last main-area tab (a pinned tab always gets a new tab instead). Repeat on desktop, in mobile emulation and on a real phone and tablet; on a phone the right sidebar closes after a jump.
+9. On a phone-width window the settings page stays usable and the rules box is full width.
 
 ## Phase 8: mobile emulation (desktop, nothing to install)
 

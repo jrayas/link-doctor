@@ -15,16 +15,12 @@ export interface LinkDoctorSettings {
 	enabledTypes: Record<BrokenType, boolean>;
 	/** Glob rules, one per entry. See `compileIgnoreRules`. */
 	ignoreRules: string[];
-	/** Minimum similarity for fix suggestions, 0.2 (loose) to 0.95 (strict). */
-	fuzzyThreshold: number;
 	autoRefresh: boolean;
 	debounceMs: number;
-	confirmBeforeFix: boolean;
 	/** Where Link, panel rows and Open show a note: a new tab (true) or the current tab (false). */
 	openInNewTab: boolean;
 }
 
-export const FUZZY_RANGE = { min: 0.2, max: 0.95 } as const;
 export const DEBOUNCE_RANGE = { min: 100, max: 5000 } as const;
 const MAX_RULES = 200;
 const MAX_RULE_LENGTH = 300;
@@ -37,10 +33,8 @@ export function defaultSettings(): LinkDoctorSettings {
 		lastPanelMode: 'current',
 		enabledTypes: Object.fromEntries(BROKEN_TYPES.map((t) => [t, true])) as Record<BrokenType, boolean>,
 		ignoreRules: [],
-		fuzzyThreshold: 0.5,
 		autoRefresh: true,
 		debounceMs: 500,
-		confirmBeforeFix: true,
 		openInNewTab: true,
 	};
 }
@@ -98,10 +92,8 @@ export function validateSettings(raw: unknown): LinkDoctorSettings {
 		lastPanelMode: pickMode(data.lastPanelMode, defaults.lastPanelMode),
 		enabledTypes,
 		ignoreRules: pickRules(data.ignoreRules, defaults.ignoreRules),
-		fuzzyThreshold: pickNumber(data.fuzzyThreshold, defaults.fuzzyThreshold, FUZZY_RANGE.min, FUZZY_RANGE.max),
 		autoRefresh: pickBool(data.autoRefresh, defaults.autoRefresh),
 		debounceMs: Math.round(pickNumber(data.debounceMs, defaults.debounceMs, DEBOUNCE_RANGE.min, DEBOUNCE_RANGE.max)),
-		confirmBeforeFix: pickBool(data.confirmBeforeFix, defaults.confirmBeforeFix),
 		openInNewTab: pickBool(data.openInNewTab, defaults.openInNewTab),
 	};
 }
