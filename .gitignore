@@ -7,3 +7,15 @@ data.json
 .env
 test-vault/Edge/generated/
 test-vault/.obsidian/
+
+# Local screenshots and scratch files
+public/
+
+# Editors, OS and tool output
+.vscode/
+.idea/
+Thumbs.db
+*.log
+*.tsbuildinfo
+coverage/
+.vitest-cache/
