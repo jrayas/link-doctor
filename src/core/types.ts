@@ -75,3 +75,12 @@ export const BROKEN_TYPE_LABELS: Record<BrokenType, string> = {
 	'missing-embed': 'Missing embed',
 	'missing-markdown-target': 'Missing Markdown link target',
 };
+
+/** Compact labels for tight columns; the full label goes in the tooltip. */
+export const BROKEN_TYPE_SHORT_LABELS: Record<BrokenType, string> = {
+	'missing-note': 'Missing note',
+	'missing-heading': 'Missing heading',
+	'missing-block': 'Missing block',
+	'missing-embed': 'Missing embed',
+	'missing-markdown-target': 'Missing target',
+};

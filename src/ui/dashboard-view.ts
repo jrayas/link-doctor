@@ -1,6 +1,6 @@
 import { ItemView, setIcon, type WorkspaceLeaf } from 'obsidian';
 import { jumpToLink } from '../adapters/navigate';
-import { BROKEN_TYPE_LABELS, BROKEN_TYPES, type BrokenLink, type BrokenType } from '../core/types';
+import { BROKEN_TYPE_LABELS, BROKEN_TYPE_SHORT_LABELS, BROKEN_TYPES, type BrokenLink, type BrokenType } from '../core/types';
 import { computeDashboard, defaultQuery, type DashboardModel } from './dashboard-model';
 import type LinkDoctorPlugin from '../main';
 
@@ -243,10 +243,10 @@ export class DashboardView extends ItemView {
 		const cell = (label: string, cls?: string) => tr.createEl('td', { attr: { 'data-label': label }, ...(cls ? { cls } : {}) });
 		if (showNote) cell('Note', 'link-doctor-cell-note').setText(link.sourcePath);
 		cell('Link', 'link-doctor-cell-link').createEl('code', { text: link.original });
-		cell('Type', 'link-doctor-cell-type').createSpan({ cls: 'link-doctor-badge', text: BROKEN_TYPE_LABELS[link.type] });
+		cell('Type', 'link-doctor-cell-type').createSpan({ cls: 'link-doctor-badge', text: BROKEN_TYPE_SHORT_LABELS[link.type], attr: { title: BROKEN_TYPE_LABELS[link.type], 'aria-label': BROKEN_TYPE_LABELS[link.type] } });
 		cell('Line', 'link-doctor-cell-line').setText(String(link.start.line + 1));
 		const actions = cell('Actions').createDiv({ cls: 'link-doctor-actions' });
-		const go = actions.createEl('button', { text: 'Go to link' });
+		const go = actions.createEl('button', { text: 'Link', attr: { 'aria-label': `Go to link on line ${link.start.line + 1}` } });
 		go.addEventListener('click', () => void jumpToLink(this.app, link, true));
 	}
 }

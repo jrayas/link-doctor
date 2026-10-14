@@ -115,7 +115,7 @@ body.is-mobile .link-doctor-toggle-button {
 .link-doctor-row .link-doctor-badge {
 	padding: 0;
 	background: none;
-	font-weight: var(--font-bold);
+	font-weight: var(--font-semibold);
 }
 
 .link-doctor-badge {
@@ -134,6 +134,7 @@ body.is-mobile .link-doctor-toggle-button {
 }
 
 .link-doctor-link-text {
+	color: var(--text-muted);
 	font-family: var(--font-monospace);
 	font-size: var(--font-ui-smaller);
 }
@@ -464,9 +465,9 @@ body.is-mobile .link-doctor-modal {
 	table-layout: fixed;
 }
 
-.link-doctor-col-type { width: 11.5em; }
+.link-doctor-col-type { width: 10em; }
 .link-doctor-col-line { width: 3.5em; }
-.link-doctor-col-actions { width: 7em; }
+.link-doctor-col-actions { width: 5em; }
 .link-doctor-col-note { width: 30%; }
 
 .link-doctor-table td { overflow-wrap: anywhere; }
@@ -565,7 +566,6 @@ body.is-mobile .link-doctor-modal {
 	.link-doctor-actions {
 		flex: 1 1 auto;
 	}
-
 }
 
 /* Settings tab */

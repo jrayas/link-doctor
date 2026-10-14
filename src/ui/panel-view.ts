@@ -1,6 +1,7 @@
 import { ItemView, setIcon, type WorkspaceLeaf } from 'obsidian';
 import { jumpToLink } from '../adapters/navigate';
 import type { PanelMode } from '../settings';
+import { BROKEN_TYPE_SHORT_LABELS } from '../core/types';
 import { computePanelState, type PanelRow, type PanelState } from './panel-model';
 import type LinkDoctorPlugin from '../main';
 
@@ -161,7 +162,7 @@ export class PanelView extends ItemView {
 			},
 		});
 		const head = el.createDiv({ cls: 'link-doctor-row-head' });
-		head.createSpan({ cls: 'link-doctor-badge', text: row.typeLabel });
+		head.createSpan({ cls: 'link-doctor-badge', text: BROKEN_TYPE_SHORT_LABELS[row.link.type], attr: { title: row.typeLabel } });
 		head.createSpan({ cls: 'link-doctor-line', text: `Line ${row.line}` });
 		el.createDiv({ cls: 'link-doctor-link-text', text: row.text });
 		if (this.mode === 'all') el.createDiv({ cls: 'link-doctor-source', text: row.sourcePath });
