@@ -18,7 +18,8 @@ export async function jumpToLink(app: App, link: BrokenLink, inNewTab = false): 
 	const from = { line: link.start.line, ch: link.start.col };
 	const to = { line: link.end.line, ch: link.end.col };
 	// The caller decides (from the "Open notes in a new tab" setting) whether to reuse the current tab.
-	const leaf = findOpenLeaf(app, file) ?? app.workspace.getLeaf(inNewTab ? 'tab' : false);
+	// A new tab is always a new tab; otherwise reuse a tab that already shows the note.
+	const leaf = inNewTab ? app.workspace.getLeaf('tab') : (findOpenLeaf(app, file) ?? app.workspace.getLeaf(false));
 	await leaf.openFile(file, { active: true, eState: { line: from.line, cursor: { from, to } } });
 	await app.workspace.revealLeaf(leaf);
 	const view = leaf.view;
