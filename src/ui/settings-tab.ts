@@ -44,6 +44,16 @@ export class LinkDoctorSettingTab extends PluginSettingTab {
 				}),
 			);
 
+		new Setting(containerEl)
+			.setName('Open notes in a new tab')
+			.setDesc('When on, the link buttons, panel rows and empty note buttons open a new tab. When off, they reuse the current tab, which replaces the dashboard if you click from it.')
+			.addToggle((t) =>
+				t.setValue(settings.openInNewTab).onChange((value) => {
+					settings.openInNewTab = value;
+					save(false);
+				}),
+			);
+
 		new Setting(containerEl).setName('Link types to check').setHeading();
 		for (const type of BROKEN_TYPES) {
 			new Setting(containerEl).setName(BROKEN_TYPE_LABELS[type]).addToggle((t) =>

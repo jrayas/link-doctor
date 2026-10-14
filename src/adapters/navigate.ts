@@ -17,7 +17,7 @@ export async function jumpToLink(app: App, link: BrokenLink, inNewTab = false): 
 	}
 	const from = { line: link.start.line, ch: link.start.col };
 	const to = { line: link.end.line, ch: link.end.col };
-	// From the dashboard, open a new tab so the dashboard itself is not replaced.
+	// The caller decides (from the "Open notes in a new tab" setting) whether to reuse the current tab.
 	const leaf = findOpenLeaf(app, file) ?? app.workspace.getLeaf(inNewTab ? 'tab' : false);
 	await leaf.openFile(file, { active: true, eState: { line: from.line, cursor: { from, to } } });
 	await app.workspace.revealLeaf(leaf);

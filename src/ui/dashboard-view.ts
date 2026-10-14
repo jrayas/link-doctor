@@ -181,7 +181,7 @@ export class DashboardView extends ItemView {
 			const li = list.createEl('li');
 			li.createSpan({ cls: 'link-doctor-empty-path', text: path });
 			const open = li.createDiv({ cls: 'link-doctor-empty-action' }).createEl('button', { text: 'Open', attr: { 'aria-label': `Open ${path}` } });
-			open.addEventListener('click', () => void this.app.workspace.openLinkText(path, '', 'tab'));
+			open.addEventListener('click', () => void this.app.workspace.openLinkText(path, '', this.plugin.settings.openInNewTab ? 'tab' : false));
 		}
 	}
 
@@ -271,6 +271,6 @@ export class DashboardView extends ItemView {
 		cell('Line', 'link-doctor-cell-line').setText(String(link.start.line + 1));
 		const actions = cell('Actions').createDiv({ cls: 'link-doctor-actions' });
 		const go = actions.createEl('button', { text: 'Link', attr: { 'aria-label': `Go to link on line ${link.start.line + 1}` } });
-		go.addEventListener('click', () => void jumpToLink(this.app, link, true));
+		go.addEventListener('click', () => void jumpToLink(this.app, link, this.plugin.settings.openInNewTab));
 	}
 }

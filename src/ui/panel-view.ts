@@ -118,7 +118,7 @@ export class PanelView extends ItemView {
 				attr: { role: 'button', tabindex: '0', 'aria-label': `Empty note: ${path}. Open` },
 			});
 			el.createDiv({ cls: 'link-doctor-link-text link-doctor-empty-name', text: path });
-			const open = () => void this.app.workspace.openLinkText(path, '', 'tab');
+			const open = () => void this.app.workspace.openLinkText(path, '', this.plugin.settings.openInNewTab ? 'tab' : false);
 			el.addEventListener('click', open);
 			el.addEventListener('keydown', (event) => {
 				if (event.key === 'Enter' || event.key === ' ') {
@@ -190,7 +190,7 @@ export class PanelView extends ItemView {
 		head.createSpan({ cls: 'link-doctor-line', text: `Line ${row.line}` });
 		el.createDiv({ cls: 'link-doctor-link-text', text: row.text });
 		if (this.mode === 'all') el.createDiv({ cls: 'link-doctor-source', text: row.sourcePath });
-		const go = () => void jumpToLink(this.app, row.link);
+		const go = () => void jumpToLink(this.app, row.link, this.plugin.settings.openInNewTab);
 		el.addEventListener('click', go);
 		el.addEventListener('keydown', (event) => {
 			if (event.key === 'Enter' || event.key === ' ') {

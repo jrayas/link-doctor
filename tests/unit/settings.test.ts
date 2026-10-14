@@ -17,12 +17,13 @@ describe('validateSettings', () => {
 			autoRefresh: false,
 			debounceMs: 900,
 			confirmBeforeFix: false,
+			openInNewTab: false,
 			ignoreRules: ['Templates/', '*.canvas'],
 			enabledTypes: { 'missing-embed': false },
 		});
 		expect(s).toMatchObject({
 			defaultPanelMode: 'all', rememberLastMode: true, lastPanelMode: 'all', fuzzyThreshold: 0.7,
-			autoRefresh: false, debounceMs: 900, confirmBeforeFix: false, ignoreRules: ['Templates/', '*.canvas'],
+			autoRefresh: false, debounceMs: 900, confirmBeforeFix: false, openInNewTab: false, ignoreRules: ['Templates/', '*.canvas'],
 		});
 		expect(s.enabledTypes['missing-embed']).toBe(false);
 		expect(s.enabledTypes['missing-note']).toBe(true);

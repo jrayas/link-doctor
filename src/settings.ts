@@ -20,6 +20,8 @@ export interface LinkDoctorSettings {
 	autoRefresh: boolean;
 	debounceMs: number;
 	confirmBeforeFix: boolean;
+	/** Where Link, panel rows and Open show a note: a new tab (true) or the current tab (false). */
+	openInNewTab: boolean;
 }
 
 export const FUZZY_RANGE = { min: 0.2, max: 0.95 } as const;
@@ -39,6 +41,7 @@ export function defaultSettings(): LinkDoctorSettings {
 		autoRefresh: true,
 		debounceMs: 500,
 		confirmBeforeFix: true,
+		openInNewTab: true,
 	};
 }
 
@@ -99,6 +102,7 @@ export function validateSettings(raw: unknown): LinkDoctorSettings {
 		autoRefresh: pickBool(data.autoRefresh, defaults.autoRefresh),
 		debounceMs: Math.round(pickNumber(data.debounceMs, defaults.debounceMs, DEBOUNCE_RANGE.min, DEBOUNCE_RANGE.max)),
 		confirmBeforeFix: pickBool(data.confirmBeforeFix, defaults.confirmBeforeFix),
+		openInNewTab: pickBool(data.openInNewTab, defaults.openInNewTab),
 	};
 }
 
