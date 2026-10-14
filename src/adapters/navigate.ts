@@ -11,8 +11,11 @@ export async function jumpToLink(app: App, link: BrokenLink, inNewTab = false): 
 	const from = { line: link.start.line, ch: link.start.col };
 	const to = { line: link.end.line, ch: link.end.col };
 	// The caller decides (from the "Open notes in a new tab" setting) whether to reuse the current tab.
-	// 'tab' always makes a new tab. `false` is the tab the user is in: Obsidian's own "open here" choice.
-	const leaf = app.workspace.getLeaf(inNewTab ? 'tab' : false);
+	// 'tab' always makes a new tab. "Here" is the tab last used in the main area: from the sidebar,
+	// Obsidian's own getLeaf(false) would open a new tab instead, so pick that leaf ourselves.
+	const here = app.workspace.getMostRecentLeaf(app.workspace.rootSplit);
+	const reusable = here && !here.getViewState().pinned ? here : null;
+	const leaf = inNewTab || !reusable ? app.workspace.getLeaf('tab') : reusable;
 	// TEMPORARY DIAGNOSTIC: remove once the tab behaviour is confirmed.
 	new Notice(`new tab setting: ${String(inNewTab)}; target view before opening: ${leaf.view.getViewType()}`, 6000);
 	await leaf.openFile(file, { active: true, eState: { line: from.line, cursor: { from, to } } });
