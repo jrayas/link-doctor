@@ -35,6 +35,8 @@ Choose the panel's starting mode, open notes in a new tab or the current one, sw
 
 ## Install
 
+Needs Obsidian 1.13 or later. (Older versions of Obsidian get version 0.1.1 automatically.)
+
 Once it's in the community list, search for **Link Doctor** in Settings, then Community plugins. To try it by hand, copy `main.js`, `manifest.json` and `styles.css` from a release into `<your vault>/.obsidian/plugins/link-doctor/` and enable it.
 
 ## For developers

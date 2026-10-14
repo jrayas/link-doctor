@@ -95,6 +95,8 @@ Research current best practice for settings UI, then implement:
 - Open notes in a new tab, or reuse the current tab
 - Reset to defaults
 
+Built with the declarative settings API (`getSettingDefinitions`, Obsidian 1.13 and later), so the options appear in Obsidian's settings search; `minAppVersion` is 1.13.0 from 0.1.2.
+
 Validate settings on load (missing or malformed data must fall back to defaults). Use a typed settings interface and a migration-friendly `settingsVersion`.
 
 ---

@@ -101,7 +101,7 @@ Highest `@since` among APIs we plan to use: `getFileByPath`/`getFolderByPath` 1.
 | D2 | Adopt `eslint-plugin-obsidianmd` ^0.4.2 `recommended` + custom Node/Electron import ban. | Current, official, enforces guidelines. |
 | D3 | Vitest for unit and mocked-integration tests; pure `core/` has zero `obsidian` imports. | `obsidian` has no runtime; purity makes testing cheap. |
 | D4 | `wdio-obsidian-service` as optional e2e, outside `verify`, pending user approval. | Reliable and current, but heavy. |
-| D5 | `minAppVersion` 1.7.2 (was 1.5.7; `revealLeaf`), `isDesktopOnly: false`. | Highest `@since` of planned APIs. |
+| D5 | `minAppVersion` 1.13.0 from 0.1.2 (1.7.2 before; was 1.5.7 at first), `isDesktopOnly: false`. | 0.1.2 adopts the declarative settings API (`getSettingDefinitions`, `@since 1.13.0`) after the directory review flagged the deprecated settings methods. Users on 1.7.2 to 1.12 keep 0.1.1 through `versions.json`. |
 | D6 | Types 1, 4, 5 via `unresolvedLinks`/own resolution; types 2, 3 via `headings`/`blocks`; resolve with `getFirstLinkpathDest` so case/path rules match Obsidian. **(verify list above)** | Prefer cache over file reads. |
 | D7 | Ignore rules: glob patterns (folder prefix + `*`/`**`), no user-supplied regex in MVP. | Safer (no ReDoS), simpler on mobile; regex also risks lookbehind on old iOS. |
 | D8 | Edits: Editor API for the active note, `vault.process` otherwise; own in-memory undo stack storing exact before/after text spans with a staleness check. | Guidelines + atomicity; undo must refuse if the text has since changed. |
@@ -137,3 +137,7 @@ Findings and decisions:
 ## 12. Decision D13: read-only finder (0.1.1)
 
 At the developer's request fix actions were removed from the panel and dashboard in 0.1.0 development, and in 0.1.1 the unused fix engine was deleted: suggestion scoring (`fuzzy`, `suggest`), link rewriting, text edits, undo stack, the preview modal and the **Match strictness** and **Confirm before applying a fix** settings. The plugin now never writes to a note, which also removes the `Vault.process` and Editor edit paths from the review surface. The code remains in git history (tag `0.1.0`, commit before this decision) if fixing is wanted later. This departs from section 2C of the original brief by the developer's choice.
+
+## 13. Directory review of 0.1.1 and the 0.1.2 response
+
+The automated review passed attestation, network, dependency, obfuscation and reproducible-build checks. It raised: vault enumeration (needed to know whether a target file exists, already stated in the README), a `clip-path` CSS warning (replaced by a plain visually-hidden header), and four settings-page items (no `getSettingDefinitions`, and deprecated `setDynamicTooltip`, `setWarning`, `display`). 0.1.2 rewrites the settings tab with the declarative API, so `minAppVersion` is now 1.13.0 and the lint override for the settings tab is gone. The key-to-value mapping is in `src/settings-bindings.ts` with unit tests.

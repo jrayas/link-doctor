@@ -16,11 +16,11 @@ Checked against the current Obsidian developer docs on 2026-10-14 (Submit your p
 | `id` unique among published plugins | Not in `community-plugins.json` (8,883 entries) on 2026-10-14: ok |
 | `name` is Basic Latin, no "Obsidian", no "Plugin", unique | `Link Doctor`: ok, unique on 2026-10-14. A similarly named "Note Doctor" exists; the names differ. |
 | `version` is `x.y.z` | `0.1.0`: ok |
-| `minAppVersion` is set and truthful | `1.7.2` (lint rule `no-unsupported-api` enforces it) |
+| `minAppVersion` is set and truthful | `1.13.0` from 0.1.2 (declarative settings API); older versions map to `1.7.2` in `versions.json`. Lint rule `no-unsupported-api` enforces it. |
 | `isDesktopOnly` is `false` and no Node or Electron API is used | `check:bundle` scans the built `main.js` on every `verify` run |
 | `author` is set | `Anthirayas`, with `authorUrl` https://github.com/jrayas. Optionally add `fundingUrl`. |
 | `description` is accurate | Reviewed after the UI dropped its fix buttons |
-| `versions.json` maps each version to its `minAppVersion` | `{"0.1.0": "1.7.2"}` |
+| `versions.json` maps each version to its `minAppVersion` | `0.1.0` and `0.1.1` to `1.7.2`, `0.1.2` to `1.13.0` |
 
 ## Guidelines check (Plugin guidelines page)
 

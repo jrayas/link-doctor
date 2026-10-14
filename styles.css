@@ -662,17 +662,3 @@ body.is-mobile .link-doctor-modal {
 .link-doctor-empty-name {
 	font-family: var(--font-interface);
 }
-
-/* Settings tab */
-.link-doctor-rules-input {
-	width: 100%;
-	min-height: 8em;
-	font-family: var(--font-monospace);
-}
-
-.link-doctor-rule-status {
-	margin-bottom: var(--size-4-2);
-	color: var(--text-muted);
-	font-size: var(--font-ui-smaller);
-	overflow-wrap: anywhere;
-}

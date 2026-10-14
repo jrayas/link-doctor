@@ -47,7 +47,7 @@ Open the dashboard with the toolbar button in the side panel, or the command **O
 
 ## Phase 7: settings
 
-Open Settings, then Link Doctor.
+Open Settings, then Link Doctor (needs Obsidian 1.13 or later). Also type a few of the option names, such as "refresh delay", into Obsidian's settings search: they should be found. The refresh delay slider shows its value next to it, and the Reset button is red.
 
 1. Add `Templates/` under **Ignored folders and patterns**: after about a second the dashboard total drops from 23 to 21 and `Templates/Template.md` disappears. A line such as `^Archive/.*$` shows a note that regular expressions are not supported.
 2. Switch off **Missing embed** under **Link types to check**: embeds vanish from the panel and dashboard. Switch it back on.
