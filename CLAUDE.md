@@ -1,6 +1,8 @@
 # Project: Obsidian Link Doctor (working name)
 
-An Obsidian plugin that finds, explains and fixes broken links. Build it end to end in this repository: research, implementation, tests and release readiness.
+An Obsidian plugin that finds and explains broken links, and shows where they are. Build it end to end in this repository: research, implementation, tests and release readiness.
+
+> **Brief updated 2026-10-14 (decision D13 in `docs/research-notes.md`).** The original brief also asked for fix suggestions (preview, apply, undo). At the developer's request fixing was removed: the plugin is a **read-only finder** that never edits notes, shipped as 0.1.1. The fix engine is in git history (tag `0.1.0`). Fixing and bulk fix are now under future ideas. Two features were added: an empty notes list, and a setting to open notes in a new tab or the current tab. Sections below describe the product as built.
 
 Use **British English** in all UI text, docs, comments and commit messages.
 
@@ -14,7 +16,7 @@ Use **British English** in all UI text, docs, comments and commit messages.
 2. **Plan first.** After research, write `docs/plan.md` (architecture, file layout, phases, risks) and show a short summary before implementing.
 3. **Work in phases** (section 6). Commit after each phase with tests passing. Never leave the build broken.
 4. **Ask before** adding heavy dependencies, changing scope, or doing anything destructive.
-5. **Never modify user notes without a preview and an undo path** (see section 4).
+5. **Never modify user notes.** The plugin is read-only; if editing is ever added it must come with a preview and an undo path (see section 4).
 
 ---
 
@@ -47,7 +49,8 @@ Deliver a short list of **decisions** from the research (e.g. test stack, lint s
 - Opens in the right sidebar via ribbon icon and command.
 - Shows broken links for the **active note** and updates when the user switches note or edits it (debounced).
 - Top toggle: **Current** (default) | **All**. Persist the last choice only if the setting allows.
-- Each broken link row shows: link text, type, line number, and a short context snippet.
+- Each broken link row shows: the type (semi-bold), the line number and the link text. In **All** mode the source note path is shown too. There is no context snippet (it repeated the link text).
+- In **All** mode, notes that are empty apart from frontmatter are listed below the broken links.
 - **Click jumps** to the exact line and position in the source note.
 - Empty state when there are no broken links (friendly message, not a blank panel).
 - Handles no active note, non-Markdown files and unsaved states gracefully.
@@ -64,21 +67,18 @@ Out of scope for MVP: external URL checking.
 
 Detection logic must be **pure and separable** from the Obsidian API so it can be unit tested. Prefer the metadata cache over reading and parsing every file. Update incrementally on changes; never rescan the whole vault on every keystroke.
 
-### C. Fix suggestions
-For each broken link:
-- **Suggest closest matches** using fuzzy matching on note names (consider aliases and heading/block candidates for those types). Show the top few with a confidence indicator.
-- One-click actions: **Apply suggestion**, **Create missing note**, **Remove link (keep text)**.
-- Every fix is previewed first (before/after), applied atomically, and **undoable** (keep an in-memory undo stack for the session at minimum).
-- Preserve aliases, heading and block parts, and the link style (wikilink vs Markdown) when rewriting.
+### C. Fix suggestions (removed)
+Not part of the product. The plugin lists broken links and jumps to them; it does not suggest, apply or undo fixes. The panel and dashboard have no fix buttons, and there are no settings or commands for fixing. This was the developer's decision (D13). To bring it back, start from git tag `0.1.0` and keep the original rules: closest-match suggestions with a confidence indicator, previewed before/after, applied atomically with `vault.process` (or the Editor API for the open note), undoable, preserving alias, heading, block and link style.
 
 ### D. Dashboard (full view)
 Opens as a main-area view via command and button in the panel.
 - Vault health summary: total notes, total links, broken link count, percentage healthy, breakdown by broken type.
-- Table of broken links: source note, link, type, line, suggested fix.
+- Table of broken links: source note (group heading), link, type, line, and a **Link** button that opens the note at the link. Columns line up across groups, and long type names are shortened (hover for the full name).
 - **Search** across files and broken links (instant filter).
 - Filters: type, folder; sort by count or name; group by source note.
 - Per-note view of broken link counts (worst offenders first).
-- Same fix actions as the panel.
+- **Empty notes** section (notes with only frontmatter or blank lines), open by default, with an **Open** button per note.
+- **Link** and **Open** follow the setting for a new tab or the current tab.
 - Respect ignore rules from settings.
 
 Keep orphan notes, unused attachments, duplicates and trends **out of the MVP** but structure the code so they can be added as extra "health checks" later.
@@ -89,11 +89,10 @@ Keep orphan notes, unused attachments, duplicates and trends **out of the MVP** 
 
 Research current best practice for settings UI, then implement:
 - Default panel mode (Current / All)
-- Ignored folders and ignore patterns (glob or regex, decide after research)
+- Ignored folders and ignore patterns (glob only, decided in research: simple, safe and mobile-friendly)
 - Which link types to check (toggle each)
-- Fuzzy match strictness (threshold)
 - Auto-refresh on/off and debounce delay
-- Confirm before applying any fix (default on)
+- Open notes in a new tab, or reuse the current tab
 - Reset to defaults
 
 Validate settings on load (missing or malformed data must fall back to defaults). Use a typed settings interface and a migration-friendly `settingsVersion`.
@@ -102,8 +101,7 @@ Validate settings on load (missing or malformed data must fall back to defaults)
 
 ## 4. Safety and quality requirements
 
-- **No silent edits.** Preview, then apply. Provide undo.
-- Use `vault.process` (or the current recommended atomic API) for edits; never read-modify-write without it.
+- **No edits.** The plugin never writes to a note. (If editing is ever added: preview, then apply, with undo.)
 - Never block the UI thread on large vaults. Chunk or defer work; show progress for first scan.
 - **Cross-platform is mandatory**: see section 4a. `isDesktopOnly` must be `false`.
 - Clean up everything on unload (views, event listeners via `registerEvent`, timers via `registerInterval`).
@@ -125,10 +123,9 @@ Research the current official guidance on mobile development and platform differ
 - Add a lint rule or test that fails the build if a Node/Electron import appears.
 
 **File system and text behaviour (the usual hidden bugs)**
-- **Case sensitivity**: macOS and Windows are usually case-insensitive, Linux and Android are case-sensitive. Link resolution and fuzzy matching must follow Obsidian's own resolution rules, not assume either behaviour.
+- **Case sensitivity**: macOS and Windows are usually case-insensitive, Linux and Android are case-sensitive. Link resolution must follow Obsidian's own resolution rules, not assume either behaviour.
 - **Unicode normalisation**: macOS file systems can store names in NFD while users type NFC (accents, e.g. `é`). Compare names with normalisation so a link is not falsely reported as broken. Test with accented, CJK, emoji and RTL names.
-- **Line endings**: handle both `\n` and `\r\n` when computing line numbers, jumping to lines and rewriting links. Never convert a file's existing line endings when applying a fix.
-- **Forbidden characters and long paths**: Windows restricts some characters and path lengths. When creating a missing note, sanitise the filename safely and warn rather than fail silently.
+- **Line endings**: handle both `\n` and `\r\n` when computing line numbers, and jumping to lines.
 - **Vault location**: do not assume iCloud, OneDrive, Dropbox or Sync folder behaviour. Handle files appearing, disappearing or being mid-sync without errors.
 
 **UI and interaction**
@@ -136,7 +133,7 @@ Research the current official guidance on mobile development and platform differ
 - Responsive layout from roughly 320 px wide upwards: the panel on a phone sidebar, the dashboard on a tablet and a desktop pane. Tables must collapse to a card or list layout on narrow screens.
 - Respect safe areas, light and dark themes, and user font size; use Obsidian CSS variables only.
 - Keep keyboard accessibility on desktop and screen reader labels on all platforms.
-- Test the fix preview modal on a small screen (scrolls, buttons reachable, no clipped content).
+- Test the dashboard and settings page on a small screen (scrolls, buttons reachable, no clipped content).
 
 **Performance and memory on mobile**
 - Assume a low-memory phone and a large vault. Work incrementally, avoid holding the full vault content in memory, and never read every file's contents when the metadata cache is enough.
@@ -153,8 +150,7 @@ Set up testing as part of the build, not an afterthought.
    - Link classification and broken-link detection (all five types)
    - Heading and block resolution, including nested headings, duplicate headings and special characters
    - Aliases, relative paths, folders with spaces, case sensitivity, and non-ASCII names
-   - Fuzzy matcher ranking and thresholds
-   - Link rewriting (preserves alias, heading, block, style)
+   - Empty note detection (frontmatter ignored)
    - Ignore rule matching
    - Settings validation and defaults
    - Cross-platform edge cases: NFC vs NFD names, `\r\n` vs `\n` line numbers, case differences, Windows-forbidden characters, very long names, backslash vs forward slash input
@@ -167,7 +163,7 @@ Set up testing as part of the build, not an afterthought.
 6. **CI**: GitHub Actions workflow running `verify` on **macOS, Windows and Ubuntu** runners. Add a release workflow producing `main.js`, `manifest.json` and `styles.css` per current release requirements.
 7. **Mobile and device testing**:
    - Research how to emulate mobile in desktop Obsidian (e.g. the developer console `app.emulateMobile(true)`) and document the exact steps in `docs/manual-testing.md`.
-   - Provide a manual checklist for **real devices** (iPhone, iPad, Android phone and tablet) covering: open panel, switch notes, Current/All toggle, jump to line, preview and apply a fix, undo, dashboard search and filters, rotate screen, dark and light themes.
+   - Provide a manual checklist for **real devices** (iPhone, iPad, Android phone and tablet) covering: open panel, switch notes, Current/All toggle, jump to line, open in new tab or this tab, empty notes list, dashboard search and filters, rotate screen, dark and light themes.
    - Include a fixture note with CRLF line endings, NFD-named files and accented, CJK and emoji names.
    - Automated test that scans the built `main.js` and source for forbidden Node/Electron imports.
 8. **Performance check**: a script that generates a synthetic vault (e.g. 5,000 notes with random links) and measures scan time. Record the numbers in `docs/research-notes.md` and set a sensible target.
@@ -180,7 +176,7 @@ Set up testing as part of the build, not an afterthought.
 2. **Scaffold**: based on the current official sample plugin; TypeScript strict mode, lint, test runner, `verify` script, CI skeleton, fixture vault.
 3. **Core engine** (pure logic) with unit tests passing.
 4. **Side panel** with Current/All toggle, jump to line, live updates.
-5. **Fix suggestions**, preview, apply and undo.
+5. **Fix suggestions**, preview, apply and undo. (Built, then removed in 0.1.1; see D13.)
 6. **Dashboard** with search, filters and health summary.
 7. **Settings tab** and validation.
 8. **Hardening**: large-vault performance, cross-platform checks (section 4a: Node/Electron import scan, NFC/NFD, CRLF, case sensitivity), mobile emulation and touch-only pass, accessibility, unload cleanup. Also check mobile layout early in phases 4 and 6, not only here.
@@ -194,7 +190,7 @@ At the end of each phase: run `npm run verify`, summarise what was done, list kn
 
 - All five link types detected correctly against the fixture vault (counts match the fixture README).
 - Panel follows the active note and the Current/All toggle works.
-- Fixes are previewed, atomic and undoable.
+- The plugin never edits notes (read-only by design).
 - Dashboard search and filters work; ignore rules respected.
 - `npm run verify` passes locally and in CI on macOS, Windows and Ubuntu.
 - No Node/Electron APIs in the built plugin (enforced by an automated check); `isDesktopOnly` is `false`.
@@ -208,4 +204,4 @@ At the end of each phase: run `npm run verify`, summarise what was done, list kn
 
 ## 8. Future ideas (do not build now, keep the architecture ready)
 
-Orphan notes, unused attachments, duplicate note names, empty notes, health score trend over time, bulk fix with preview, export report to Markdown or CSV, opt-in external URL checking.
+Fix suggestions with preview, apply and undo (see section 2C), orphan notes, unused attachments, duplicate note names, health score trend over time, bulk fix with preview, export report to Markdown or CSV, opt-in external URL checking.
