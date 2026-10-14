@@ -11,6 +11,7 @@ export class DashboardView extends ItemView {
 	private query = defaultQuery();
 	private summaryEl!: HTMLElement;
 	private resultsEl!: HTMLElement;
+	private emptyEl!: HTMLElement;
 	private statusEl!: HTMLElement;
 	private searchEl!: HTMLInputElement;
 	private folderEl!: HTMLSelectElement;
@@ -43,6 +44,7 @@ export class DashboardView extends ItemView {
 		this.buildControls(root);
 		this.statusEl = root.createDiv({ cls: 'link-doctor-status', attr: { role: 'status', 'aria-live': 'polite' } });
 		this.resultsEl = root.createDiv({ cls: 'link-doctor-results' });
+		this.emptyEl = root.createDiv({ cls: 'link-doctor-empty-notes' });
 		this.refresh();
 		return Promise.resolve();
 	}
@@ -118,6 +120,7 @@ export class DashboardView extends ItemView {
 		const service = this.plugin.service;
 		const status = service.getStatus();
 		this.resultsEl.empty();
+		this.emptyEl.empty();
 		this.statusEl.empty();
 		if (status.state !== 'ready') {
 			this.summaryEl.empty();
@@ -131,6 +134,7 @@ export class DashboardView extends ItemView {
 			query: this.query,
 		});
 		this.renderSummary(model);
+		this.renderEmptyNotes(service.emptyNotes());
 		this.syncControls(model);
 		if (model.summary.brokenCount === 0) {
 			this.message('No broken links', 'Every link in your vault resolves. Nice work.');
@@ -160,6 +164,21 @@ export class DashboardView extends ItemView {
 				this.query = { ...this.query, limit: this.query.limit + PAGE };
 				this.render();
 			});
+		}
+	}
+
+	/** Notes with no content apart from frontmatter. Collapsed by default so it stays out of the way. */
+	private renderEmptyNotes(paths: string[]): void {
+		if (paths.length === 0) return;
+		const details = this.emptyEl.createEl('details', { cls: 'link-doctor-empty-details' });
+		details.createEl('summary', { text: `Empty notes (${paths.length})` });
+		details.createDiv({ cls: 'link-doctor-empty-hint', text: 'These notes have no content apart from frontmatter.' });
+		const list = details.createEl('ul', { cls: 'link-doctor-empty-list' });
+		for (const path of paths) {
+			const li = list.createEl('li');
+			li.createSpan({ cls: 'link-doctor-empty-path', text: path });
+			const open = li.createEl('button', { text: 'Open', attr: { 'aria-label': `Open ${path}` } });
+			open.addEventListener('click', () => void this.app.workspace.openLinkText(path, '', 'tab'));
 		}
 	}
 

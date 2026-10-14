@@ -33,6 +33,8 @@ export function toSnapshot(path: string, cache: CachedMetadata): NoteSnapshot {
 		links: [...byOffset.values()].sort((a, b) => a.start.offset - b.start.offset),
 		headings: (cache.headings ?? []).map((h) => ({ heading: h.heading, level: h.level })),
 		blocks: Object.keys(cache.blocks ?? {}),
+		// Obsidian lists frontmatter as a 'yaml' section; a blank body (spaces, newlines) has no sections at all.
+		empty: (cache.sections ?? []).every((section) => section.type === 'yaml'),
 	};
 }
 

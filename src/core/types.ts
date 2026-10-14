@@ -47,6 +47,8 @@ export interface NoteSnapshot {
 	headings: HeadingInfo[];
 	/** Block ids without the leading `^`. */
 	blocks: string[];
+	/** True when the note has no content once any frontmatter is set aside. */
+	empty?: boolean;
 }
 
 export interface BrokenLink {

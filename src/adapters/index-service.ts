@@ -1,4 +1,5 @@
 import { detectNote, type DetectOptions } from '../core/detect';
+import { findEmptyNotes } from '../core/checks/empty-notes';
 import { VaultIndex } from '../core/resolve';
 import { extensionOf } from '../core/text';
 import type { BrokenLink, NoteSnapshot } from '../core/types';
@@ -84,6 +85,11 @@ export class IndexService {
 	allBroken(): BrokenLink[] {
 		const paths = [...this.broken.keys()].sort();
 		return paths.flatMap((p) => this.broken.get(p) ?? []);
+	}
+
+	/** Notes with nothing but (optional) frontmatter, honouring the ignore rules. */
+	emptyNotes(): string[] {
+		return findEmptyNotes(this.index, this.getOptions().isIgnored);
 	}
 
 	noteCount(): number {

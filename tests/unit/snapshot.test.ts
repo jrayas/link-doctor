@@ -31,7 +31,16 @@ describe('toSnapshot', () => {
 		expect(toSnapshot('N.md', { frontmatter: { alias: 'solo' } }).aliases).toEqual(['solo']);
 	});
 
+	it('treats a note with only frontmatter as empty, and any other content as not empty', () => {
+		const section = (type: string) => ({ type, position: {} });
+		const only = toSnapshot('N.md', { sections: [section('yaml')] } as unknown as CachedMetadata);
+		expect(only.empty).toBe(true);
+		const withBody = toSnapshot('N.md', { sections: [section('yaml'), section('paragraph')] } as unknown as CachedMetadata);
+		expect(withBody.empty).toBe(false);
+		expect(toSnapshot('N.md', { sections: [section('heading')] } as unknown as CachedMetadata).empty).toBe(false);
+	});
+
 	it('handles an empty cache', () => {
-		expect(toSnapshot('N.md', {})).toEqual({ path: 'N.md', aliases: [], links: [], headings: [], blocks: [] });
+		expect(toSnapshot('N.md', {})).toEqual({ path: 'N.md', aliases: [], links: [], headings: [], blocks: [], empty: true });
 	});
 });

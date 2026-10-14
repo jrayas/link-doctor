@@ -590,6 +590,51 @@ body.is-mobile .link-doctor-modal {
 	}
 }
 
+/* Empty notes */
+.link-doctor-empty-notes {
+	margin-top: var(--size-4-4);
+}
+
+.link-doctor-empty-details > summary {
+	cursor: pointer;
+	min-height: var(--ld-target, 32px);
+	display: flex;
+	align-items: center;
+	font-size: var(--font-ui-small);
+	font-weight: var(--font-semibold);
+}
+
+.link-doctor-empty-hint {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
+
+.link-doctor-empty-list {
+	list-style: none;
+	margin: var(--size-4-1) 0 0;
+	padding: 0;
+}
+
+.link-doctor-empty-list li {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--size-4-2);
+	padding: var(--size-4-1) 0;
+	border-bottom: 1px solid var(--background-modifier-border);
+	font-size: var(--font-ui-smaller);
+}
+
+.link-doctor-empty-path {
+	overflow-wrap: anywhere;
+}
+
+.link-doctor-empty-list button {
+	flex: none;
+	min-height: var(--ld-target, 32px);
+	white-space: nowrap;
+}
+
 /* Settings tab */
 .link-doctor-rules-input {
 	width: 100%;
